@@ -11,6 +11,8 @@ import Peta from '../screens/Peta';
 import Lapor from '../screens/Lapor';
 import Akun from '../screens/Akun';
 import Splash from '../screens/Splash';
+import BuatLaporan from '../screens/BuatLaporan';
+import PetaDetail from '../screens/PetaDetail';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -53,6 +55,16 @@ function MainScreens() {
       <Tab.Screen name="Peta" component={Peta} />
       <Tab.Screen name="Lapor" component={Lapor} />
       <Tab.Screen name="Akun" component={Akun} />
+      <Tab.Screen
+        name="BuatLaporan"
+        component={BuatLaporan}
+        options={{tabBarVisible: false, tabBarButton: () => null}}
+      />
+      <Tab.Screen
+        name="PetaDetail"
+        component={PetaDetail}
+        options={{tabBarVisible: false, tabBarButton: () => null}}
+      />
     </Tab.Navigator>
   );
 }

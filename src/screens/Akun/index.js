@@ -14,7 +14,7 @@ class Akun extends React.Component {
     return (
       <View style={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.textHeader}> Akun</Text>
+          <Text style={styles.textHeader}>Akun</Text>
         </View>
         <ScrollView style={styles.scroll}>
           <View style={styles.boxProfile}>
