@@ -13,6 +13,10 @@ import Akun from '../screens/Akun';
 import Splash from '../screens/Splash';
 import BuatLaporan from '../screens/BuatLaporan';
 import PetaDetail from '../screens/PetaDetail';
+import PetaPreview from '../screens/PetaPreview';
+import DetailLayanan from '../screens/DetailLayanan';
+import TambahLayanan from '../screens/TambahLayanan';
+import DetailBeranda from '../screens/DetailBeranda';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -65,6 +69,26 @@ function MainScreens() {
         component={PetaDetail}
         options={{tabBarVisible: false, tabBarButton: () => null}}
       />
+      <Tab.Screen
+        name="PetaPreview"
+        component={PetaPreview}
+        options={{tabBarVisible: false, tabBarButton: () => null}}
+      />
+      <Tab.Screen
+        name="DetailLayanan"
+        component={DetailLayanan}
+        options={{tabBarVisible: false, tabBarButton: () => null}}
+      />
+      <Tab.Screen
+        name="TambahLayanan"
+        component={TambahLayanan}
+        options={{tabBarVisible: false, tabBarButton: () => null}}
+      />
+      <Tab.Screen
+        name="DetailBeranda"
+        component={DetailBeranda}
+        options={{tabBarVisible: false, tabBarButton: () => null}}
+      />
     </Tab.Navigator>
   );
 }
@@ -77,7 +101,7 @@ function MainNavigator() {
           headerShown: false,
           animationEnabled: false,
         }}
-        initialRouteName="MainScreens">
+        initialRouteName="Splash">
         <Stack.Screen name="Splash" component={Splash} />
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="MainScreens" component={MainScreens} />

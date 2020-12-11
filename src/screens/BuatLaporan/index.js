@@ -20,7 +20,7 @@ class BuatLaporan extends React.Component {
             name="arrow-left"
             size={30}
             color="white"
-            onPress={() => this.props.navigation.navigate('Lapor')}
+            onPress={() => this.props.navigation.goBack()}
           />
           <Text style={styles.textHeader}>Lapor Online</Text>
         </View>

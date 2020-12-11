@@ -70,11 +70,21 @@ class PetaDetail extends React.Component {
             name="arrow-left"
             size={30}
             color="white"
-            onPress={() => this.props.navigation.navigate('Peta')}
+            onPress={() => this.props.navigation.goBack()}
           />
           <Text style={styles.textHeader}>Peta</Text>
         </View>
         <ScrollView style={styles.scroll}>
+          <Text
+            style={{
+              width: '100%',
+              textAlign: 'center',
+              marginTop: 15,
+              fontSize: 16,
+              fontWeight: 'bold',
+            }}>
+            Sawah Jeblok
+          </Text>
           <View style={styles.cameraContainer}>
             <ImageBackground
               style={styles.boxCamera}
@@ -82,7 +92,8 @@ class PetaDetail extends React.Component {
                 uri:
                   'https://static1.cbrimages.com/wordpress/wp-content/uploads/2019/10/5-Characters-Sanji-Can-Beat.jpg',
               }}>
-              <TouchableNativeFeedback>
+              <TouchableNativeFeedback
+                onPress={() => this.props.navigation.navigate('PetaPreview')}>
                 <View style={styles.boxLiihat}>
                   <Text style={styles.textLihat}>Lihat Peta</Text>
                 </View>

@@ -54,7 +54,8 @@ class Akun extends React.Component {
             <Text style={styles.textprofile2}>Surveyor</Text>
           </View>
           <View style={styles.boxLogout}>
-            <TouchableNativeFeedback>
+            <TouchableNativeFeedback
+              onPress={() => this.props.navigation.replace('Login')}>
               <View style={styles.buttonLogout}>
                 <Text style={styles.textButtonLogout}>LOGOUT</Text>
               </View>
