@@ -11,7 +11,7 @@ import {
 
 class Login extends React.Component {
   login = () => {
-    this.props.navigation.navigate('MainScreens');
+    this.props.navigation.replace('MainScreens');
   };
   render() {
     return (

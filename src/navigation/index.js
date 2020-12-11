@@ -21,6 +21,59 @@ import DetailBeranda from '../screens/DetailBeranda';
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
+function layananStack() {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+        animationEnabled: false,
+      }}>
+      <Stack.Screen name="Layanan" component={Layanan} />
+      <Stack.Screen name="DetailLayanan" component={DetailLayanan} />
+      <Stack.Screen name="TambahLayanan" component={TambahLayanan} />
+    </Stack.Navigator>
+  );
+}
+
+function petaStack() {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+        animationEnabled: false,
+      }}>
+      <Stack.Screen name="Peta" component={Peta} />
+      <Stack.Screen name="PetaDetail" component={PetaDetail} />
+      <Stack.Screen name="PetaPreview" component={PetaPreview} />
+    </Stack.Navigator>
+  );
+}
+
+function laporStack() {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+        animationEnabled: false,
+      }}>
+      <Stack.Screen name="Lapor" component={Lapor} />
+      <Stack.Screen name="BuatLaporan" component={BuatLaporan} />
+    </Stack.Navigator>
+  );
+}
+function berandaStack() {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+        animationEnabled: false,
+      }}>
+      <Stack.Screen name="Beranda" component={Beranda} />
+      <Stack.Screen name="DetailBeranda" component={DetailBeranda} />
+    </Stack.Navigator>
+  );
+}
+
 function MainScreens() {
   return (
     <Tab.Navigator
@@ -54,12 +107,12 @@ function MainScreens() {
         inactiveTintColor: 'gray',
         showLabel: false,
       }}>
-      <Tab.Screen name="Beranda" component={Beranda} />
-      <Tab.Screen name="Layanan" component={Layanan} />
-      <Tab.Screen name="Peta" component={Peta} />
-      <Tab.Screen name="Lapor" component={Lapor} />
+      <Tab.Screen name="Beranda" component={berandaStack} />
+      <Tab.Screen name="Layanan" component={layananStack} />
+      <Tab.Screen name="Peta" component={petaStack} />
+      <Tab.Screen name="Lapor" component={laporStack} />
       <Tab.Screen name="Akun" component={Akun} />
-      <Tab.Screen
+      {/* <Tab.Screen
         name="BuatLaporan"
         component={BuatLaporan}
         options={{tabBarVisible: false, tabBarButton: () => null}}
@@ -88,7 +141,7 @@ function MainScreens() {
         name="DetailBeranda"
         component={DetailBeranda}
         options={{tabBarVisible: false, tabBarButton: () => null}}
-      />
+      /> */}
     </Tab.Navigator>
   );
 }
