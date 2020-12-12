@@ -8,10 +8,81 @@ import {
   TouchableOpacity,
   TouchableNativeFeedback,
   TextInput,
+  ImageBackground,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 
+import ImagePicker from 'react-native-image-picker';
+const options = {
+  title: 'Select Avatar',
+  storageOptions: {
+    skipBackup: true,
+    path: 'images',
+  },
+};
+
 class BuatLaporan extends React.Component {
+  state = {
+    avatarSource: '',
+    fileName: '',
+    type: '',
+    uri: '',
+    fileSize: '',
+  };
+  pickerImage = () => {
+    ImagePicker.showImagePicker(options, response => {
+      console.log('Response = ', response);
+
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      } else if (response.customButton) {
+        console.log('User tapped custom button: ', response.customButton);
+      } else {
+        const source = {uri: response.uri};
+        const fileName = response.fileName;
+        const type = response.type;
+        const uri = response.uri;
+        const fileSize = response.fileSize;
+
+        this.setState({
+          avatarSource: source,
+          fileName: fileName,
+          type: type,
+          uri: uri,
+          fileSize: fileSize,
+        });
+      }
+    });
+  };
+  imageBox = () => {
+    if (this.state.fileName == '') {
+      return (
+        <View style={styles.boxCamera}>
+          <Icon
+            name="camera"
+            size={100}
+            color="grey"
+            onPress={() => this.pickerImage()}
+          />
+        </View>
+      );
+    } else {
+      return (
+        <ImageBackground
+          style={{...styles.boxCamera, resizeMode: 'cover'}}
+          source={this.state.avatarSource}>
+          <Icon
+            name="camera"
+            size={100}
+            color="grey"
+            onPress={() => this.pickerImage()}
+          />
+        </ImageBackground>
+      );
+    }
+  };
   render() {
     return (
       <View style={styles.container}>
@@ -25,11 +96,7 @@ class BuatLaporan extends React.Component {
           <Text style={styles.textHeader}>Lapor Online</Text>
         </View>
         <ScrollView style={styles.scroll}>
-          <View style={styles.cameraContainer}>
-            <View style={styles.boxCamera}>
-              <Icon name="camera" size={100} color="grey" />
-            </View>
-          </View>
+          <View style={styles.cameraContainer}>{this.imageBox()}</View>
           <View style={styles.boxContent}>
             <Text style={styles.text1}>Pilih Kategori</Text>
             <View style={styles.childBox}>
