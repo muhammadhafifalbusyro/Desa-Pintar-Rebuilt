@@ -9,6 +9,9 @@ import {
   TouchableNativeFeedback,
   TextInput,
   ImageBackground,
+  Modal,
+  ToastAndroid,
+  ActivityIndicator,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 
@@ -21,6 +24,8 @@ const options = {
   },
 };
 
+const accessToken =
+  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjA3ODMyODMwLCJqdGkiOiJhMGU1ZTRjYzYxZDI0MWVjOWIyZTIxOTQxZWEyMDFlNSIsInVzZXJfaWQiOjF9.n33NInIK_xvOg74F1KMJIBikzlZn2_6dZAr8qEip8WM';
 class BuatLaporan extends React.Component {
   state = {
     avatarSource: '',
@@ -28,6 +33,51 @@ class BuatLaporan extends React.Component {
     type: '',
     uri: '',
     fileSize: '',
+    kategori: 'Pilih Kategori',
+    visible: false,
+    dataKategori: [],
+    kategoriID: '',
+    judul: '',
+    deskripsi: '',
+    modalVisible: false,
+  };
+  componentDidMount() {
+    this.getDataKategori();
+  }
+  getDataKategori = () => {
+    const token = accessToken;
+    const url = 'http://156.67.219.143/v1/kategorilapor/';
+    fetch(url, {
+      method: 'GET',
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    })
+      .then(res => res.json())
+      .then(resJson => {
+        if (resJson.data) {
+          this.setState({dataKategori: resJson.data});
+          ToastAndroid.show(
+            'Data berhasil didapatkan',
+            ToastAndroid.SHORT,
+            ToastAndroid.CENTER,
+          );
+        } else {
+          console.log('error');
+          ToastAndroid.show(
+            'Data gagal didapatkan',
+            ToastAndroid.SHORT,
+            ToastAndroid.CENTER,
+          );
+        }
+      })
+      .catch(er => {
+        ToastAndroid.show(
+          'Data gagal didapatkan',
+          ToastAndroid.SHORT,
+          ToastAndroid.CENTER,
+        );
+      });
   };
   pickerImage = () => {
     ImagePicker.showImagePicker(options, response => {
@@ -45,7 +95,7 @@ class BuatLaporan extends React.Component {
         const type = response.type;
         const uri = response.uri;
         const fileSize = response.fileSize;
-
+        console.log('ininininini ' + fileName);
         this.setState({
           avatarSource: source,
           fileName: fileName,
@@ -83,9 +133,166 @@ class BuatLaporan extends React.Component {
       );
     }
   };
+  submit = () => {
+    const {fileName, kategoriID, judul, deskripsi} = this.state;
+    const url = 'http://156.67.219.143/v1/lapor/';
+    if (fileName != '' && kategoriID != '' && judul != '' && deskripsi != '') {
+      this.setState({modalVisible: true});
+      let image = {
+        uri: this.state.uri,
+        type: this.state.type,
+        name: this.state.fileName,
+      };
+
+      const formData = new FormData();
+
+      formData.append('kategori', kategoriID);
+      formData.append('judul', judul);
+      formData.append('isi', deskripsi);
+      formData.append('gambar', image);
+
+      console.log(formData);
+      if (this.state.fileSize >= 1500000) {
+        this.setState({modalVisible: false});
+        ToastAndroid.show(
+          'Foto terlalu besar, maksimal 1,5 MB',
+          ToastAndroid.SHORT,
+          ToastAndroid.CENTER,
+        );
+      } else {
+        fetch(url, {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${accessToken}`,
+          },
+          body: formData,
+        })
+          .then(response => response.json())
+          .then(json => {
+            if (json.data) {
+              this.setState({modalVisible: false});
+              ToastAndroid.show(
+                'Laporan berhasil ditambahkan',
+                ToastAndroid.SHORT,
+                ToastAndroid.CENTER,
+              );
+              this.props.navigation.goBack();
+            } else {
+              this.setState({modalVisible: false});
+              ToastAndroid.show(
+                'Laporan gagal ditambahkan',
+                ToastAndroid.SHORT,
+                ToastAndroid.CENTER,
+              );
+            }
+          })
+          .catch(error => {
+            this.setState({modalVisible: false});
+            console.log(error);
+            ToastAndroid.show(
+              'Network error',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+          });
+      }
+    } else {
+      ToastAndroid.show(
+        'Data tidak boleh kosong',
+        ToastAndroid.SHORT,
+        ToastAndroid.CENTER,
+      );
+    }
+  };
   render() {
     return (
       <View style={styles.container}>
+        <Modal
+          visible={this.state.visible}
+          animationType="slide"
+          transparent={true}
+          onRequestClose={() => this.setState({visible: false})}>
+          <View
+            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            <View
+              style={{
+                height: '40%',
+                width: '90%',
+                backgroundColor: 'white',
+                elevation: 5,
+                borderRadius: 5,
+              }}>
+              <View
+                style={{
+                  height: 50,
+                  width: '100%',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  borderBottomWidth: 1,
+                  borderColor: 'rgba(0,0,0,0.3)',
+                }}>
+                <Text style={{fontWeight: 'bold'}}>Pilih Kategori</Text>
+              </View>
+              <ScrollView style={{flex: 1, padding: 10}}>
+                {this.state.dataKategori.map((value, key) => {
+                  return (
+                    <View
+                      key={key}
+                      style={{
+                        height: 40,
+                        marginBottom: 3,
+                        width: '100%',
+                        padding: 5,
+                        borderBottomWidth: 1,
+                        borderColor: 'rgba(0,0,0,0.3)',
+                      }}>
+                      <Text
+                        onPress={() =>
+                          this.setState({
+                            kategoriID: value.id,
+                            kategori: value.nama,
+                            visible: false,
+                          })
+                        }>
+                        {value.nama}
+                      </Text>
+                    </View>
+                  );
+                })}
+              </ScrollView>
+            </View>
+          </View>
+        </Modal>
+        <Modal
+          visible={this.state.modalVisible}
+          animationType="slide"
+          transparent={true}
+          onRequestClose={() => {
+            ToastAndroid.show(
+              'Tunggu proses selesai',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+          }}>
+          <View
+            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            <View
+              style={{
+                height: 100,
+                width: 100,
+                backgroundColor: 'white',
+                elevation: 5,
+                borderRadius: 5,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <ActivityIndicator size="large" color="#19d2ba" />
+              <Text>Loading...</Text>
+            </View>
+          </View>
+        </Modal>
         <View style={styles.header}>
           <Icon
             name="arrow-left"
@@ -100,17 +307,28 @@ class BuatLaporan extends React.Component {
           <View style={styles.boxContent}>
             <Text style={styles.text1}>Pilih Kategori</Text>
             <View style={styles.childBox}>
-              <Text>Pertanian</Text>
-              <Icon name="chevron-down" size={25} />
+              <Text>{this.state.kategori}</Text>
+              <Icon
+                name="chevron-down"
+                size={25}
+                onPress={() => this.setState({visible: true})}
+              />
             </View>
           </View>
           <View style={styles.boxContent}>
             <Text style={styles.text1}>Judul</Text>
-            <TextInput style={styles.childBox} placeholder="Masukan Judul" />
+            <TextInput
+              style={styles.childBox}
+              placeholder="Masukan Judul"
+              value={this.state.judul}
+              onChangeText={teks => this.setState({judul: teks})}
+            />
           </View>
           <View style={styles.boxContent}>
             <Text style={styles.text1}>Deskripsi</Text>
             <TextInput
+              value={this.state.deskripsi}
+              onChangeText={teks => this.setState({deskripsi: teks})}
               style={{
                 ...styles.childBox,
                 height: 150,
@@ -120,7 +338,7 @@ class BuatLaporan extends React.Component {
             />
           </View>
           <View style={styles.boxContent}>
-            <TouchableNativeFeedback>
+            <TouchableNativeFeedback onPress={() => this.submit()}>
               <View
                 style={{
                   ...styles.childBox,

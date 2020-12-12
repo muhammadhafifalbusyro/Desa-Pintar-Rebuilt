@@ -10,10 +10,13 @@ import {
   Dimensions,
   ToastAndroid,
   TextInput,
+  RefreshControl,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 
 const width = Dimensions.get('window').width;
+const accessToken =
+  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjA3ODMyODMwLCJqdGkiOiJhMGU1ZTRjYzYxZDI0MWVjOWIyZTIxOTQxZWEyMDFlNSIsInVzZXJfaWQiOjF9.n33NInIK_xvOg74F1KMJIBikzlZn2_6dZAr8qEip8WM';
 
 class Beranda extends React.Component {
   state = {
@@ -22,6 +25,7 @@ class Beranda extends React.Component {
     data: [],
     dataInformasi: [],
     dataPotensi: [],
+    loading: false,
   };
   componentDidMount() {
     this.getDataBerita();
@@ -29,9 +33,9 @@ class Beranda extends React.Component {
     this.getDataPotensi();
   }
   getDataBerita = () => {
-    const url = 'http://156.67.219.143/v1/artikel/';
-    const token =
-      'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjA3NzM1OTI5LCJqdGkiOiI0NGJmZjEwYmQxMzk0ZWY4YjM5ZTE0YThkODU4MTBhNCIsInVzZXJfaWQiOjF9.jL_mVqIb6v1ZHJErKSxDAHuOs6sjLsZT7gn4chzD_Jk';
+    this.setState({loading: true});
+    const url = 'http://156.67.219.143/v1/artikel/?include[]=kategori.*';
+    const token = accessToken;
     fetch(url, {
       method: 'GET',
       headers: {
@@ -42,8 +46,16 @@ class Beranda extends React.Component {
       .then(resJson => {
         console.log(resJson);
         if (resJson.data) {
-          this.setState({data: resJson.data});
+          this.setState({data: resJson.data, loading: false});
         } else if (resJson.code) {
+          this.setState({loading: false});
+          ToastAndroid.show(
+            resJson.code,
+            ToastAndroid.SHORT,
+            ToastAndroid.CENTER,
+          );
+        } else {
+          this.setState({loading: false});
           ToastAndroid.show(
             resJson.code,
             ToastAndroid.SHORT,
@@ -52,13 +64,14 @@ class Beranda extends React.Component {
         }
       })
       .catch(er => {
+        this.setState({loading: false});
         console.log(er);
       });
   };
   getDataInformasi = () => {
-    const url = 'http://156.67.219.143/v1/informasi/';
-    const token =
-      'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjA3NzM1OTI5LCJqdGkiOiI0NGJmZjEwYmQxMzk0ZWY4YjM5ZTE0YThkODU4MTBhNCIsInVzZXJfaWQiOjF9.jL_mVqIb6v1ZHJErKSxDAHuOs6sjLsZT7gn4chzD_Jk';
+    this.setState({loading: true});
+    const url = 'http://156.67.219.143/v1/informasi/?include[]=kategori.*';
+    const token = accessToken;
     fetch(url, {
       method: 'GET',
       headers: {
@@ -69,8 +82,16 @@ class Beranda extends React.Component {
       .then(resJson => {
         console.log(resJson);
         if (resJson.data) {
-          this.setState({dataInformasi: resJson.data});
+          this.setState({dataInformasi: resJson.data, loading: false});
         } else if (resJson.code) {
+          this.setState({loading: false});
+          ToastAndroid.show(
+            resJson.code,
+            ToastAndroid.SHORT,
+            ToastAndroid.CENTER,
+          );
+        } else {
+          this.setState({loading: false});
           ToastAndroid.show(
             resJson.code,
             ToastAndroid.SHORT,
@@ -79,13 +100,14 @@ class Beranda extends React.Component {
         }
       })
       .catch(er => {
+        this.setState({loading: false});
         console.log(er);
       });
   };
   getDataPotensi = () => {
-    const url = 'http://156.67.219.143/v1/potensi/';
-    const token =
-      'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjA3NzM1OTI5LCJqdGkiOiI0NGJmZjEwYmQxMzk0ZWY4YjM5ZTE0YThkODU4MTBhNCIsInVzZXJfaWQiOjF9.jL_mVqIb6v1ZHJErKSxDAHuOs6sjLsZT7gn4chzD_Jk';
+    this.setState({loading: true});
+    const url = 'http://156.67.219.143/v1/potensi/?include[]=kategori.*';
+    const token = accessToken;
     fetch(url, {
       method: 'GET',
       headers: {
@@ -96,8 +118,16 @@ class Beranda extends React.Component {
       .then(resJson => {
         console.log(resJson);
         if (resJson.data) {
-          this.setState({dataPotensi: resJson.data});
+          this.setState({dataPotensi: resJson.data, loading: false});
         } else if (resJson.code) {
+          this.setState({loading: false});
+          ToastAndroid.show(
+            resJson.code,
+            ToastAndroid.SHORT,
+            ToastAndroid.CENTER,
+          );
+        } else {
+          this.setState({loading: false});
           ToastAndroid.show(
             resJson.code,
             ToastAndroid.SHORT,
@@ -106,6 +136,7 @@ class Beranda extends React.Component {
         }
       })
       .catch(er => {
+        this.setState({loading: false});
         console.log(er);
       });
   };
@@ -187,13 +218,26 @@ class Beranda extends React.Component {
       });
     }
   };
+  onrefresh = () => {
+    this.getDataPotensi();
+    this.getDataBerita();
+    this.getDataInformasi();
+  };
   render() {
     return (
       <View style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.textHeader}>Beranda</Text>
         </View>
-        <ScrollView style={styles.scroll}>
+        <ScrollView
+          style={styles.scroll}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.loading}
+              colors={['#19D2BA']}
+              onRefresh={() => this.onrefresh()}
+            />
+          }>
           <View style={styles.boxBanner}>
             <Image
               source={require('../../assets/images/banner.png')}

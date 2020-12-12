@@ -7,31 +7,42 @@ import {
   Image,
   TouchableOpacity,
   TouchableNativeFeedback,
+  RefreshControl,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 
+const accessToken =
+  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjA3ODMyODMwLCJqdGkiOiJhMGU1ZTRjYzYxZDI0MWVjOWIyZTIxOTQxZWEyMDFlNSIsInVzZXJfaWQiOjF9.n33NInIK_xvOg74F1KMJIBikzlZn2_6dZAr8qEip8WM';
+
 class Lapor extends React.Component {
   state = {
-    data: [
-      {
-        id: 1,
-        kategori: 'pertanian',
-        title: 'Hama Wereng',
-        deskripsi: 'Hama wereng adalah hama',
-        image:
-          'https://static1.cbrimages.com/wordpress/wp-content/uploads/2019/10/5-Characters-Sanji-Can-Beat.jpg',
-        status: 'belum ditanggapi',
+    data: [],
+    loading: false,
+  };
+  componentDidMount() {
+    this.getDataLapor();
+  }
+  getDataLapor = () => {
+    this.setState({loading: true});
+    const url = 'http://156.67.219.143/v1/lapor/?include[]=kategori.*';
+    const token = accessToken;
+    fetch(url, {
+      method: 'GET',
+      headers: {
+        Authorization: 'Bearer ' + token,
       },
-      {
-        id: 2,
-        kategori: 'pertanian',
-        title: 'Ikan Mati',
-        deskripsi: 'Ikan abis tuh mati',
-        image:
-          'https://static1.cbrimages.com/wordpress/wp-content/uploads/2019/10/5-Characters-Sanji-Can-Beat.jpg',
-        status: 'belum ditanggapi',
-      },
-    ],
+    })
+      .then(res => res.json())
+      .then(resJson => {
+        console.log(resJson.data);
+        if (resJson.data) {
+          this.setState({data: resJson.data, loading: false});
+        }
+      })
+      .catch(er => {
+        this.setState({loading: false});
+        console.log(er);
+      });
   };
   render() {
     return (
@@ -39,23 +50,33 @@ class Lapor extends React.Component {
         <View style={styles.header}>
           <Text style={styles.textHeader}>Lapor Online</Text>
         </View>
-        <ScrollView style={styles.scroll}>
+        <ScrollView
+          style={styles.scroll}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.loading}
+              colors={['#19D2BA']}
+              onRefresh={() => this.getDataLapor()}
+            />
+          }>
           {this.state.data.map((value, key) => {
             return (
               <View key={key} style={styles.boxContent}>
                 <View style={styles.childBoxContent}>
-                  <Image source={{uri: value.image}} style={styles.image} />
+                  <Image source={{uri: value.gambar}} style={styles.image} />
                   <View style={styles.content1}>
-                    <Text style={styles.text1}>#{value.kategori}</Text>
+                    <Text style={styles.text1}>
+                      #{value.kategori == null ? '' : value.kategori.nama}
+                    </Text>
                     <View style={styles.statusBox}>
-                      <Text style={styles.text2}>{value.status}</Text>
+                      <Text style={styles.text2}>Sudah ditanggapi</Text>
                     </View>
                   </View>
                   <View style={styles.boxTitle}>
-                    <Text style={styles.textTitle}>{value.title}</Text>
+                    <Text style={styles.textTitle}>{value.judul}</Text>
                   </View>
                   <View style={styles.boxDesc}>
-                    <Text style={styles.textDesc}>{value.deskripsi}</Text>
+                    <Text style={styles.textDesc}>{value.isi}</Text>
                   </View>
                 </View>
               </View>
