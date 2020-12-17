@@ -8,11 +8,13 @@ import {
   TouchableOpacity,
   TouchableNativeFeedback,
   RefreshControl,
+  ToastAndroid,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const accessToken =
-  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjA3ODMyODMwLCJqdGkiOiJhMGU1ZTRjYzYxZDI0MWVjOWIyZTIxOTQxZWEyMDFlNSIsInVzZXJfaWQiOjF9.n33NInIK_xvOg74F1KMJIBikzlZn2_6dZAr8qEip8WM';
+// const accessToken =
+//   'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjA3ODMyODMwLCJqdGkiOiJhMGU1ZTRjYzYxZDI0MWVjOWIyZTIxOTQxZWEyMDFlNSIsInVzZXJfaWQiOjF9.n33NInIK_xvOg74F1KMJIBikzlZn2_6dZAr8qEip8WM';
 
 class Lapor extends React.Component {
   state = {
@@ -23,26 +25,45 @@ class Lapor extends React.Component {
     this.getDataLapor();
   }
   getDataLapor = () => {
-    this.setState({loading: true});
-    const url = 'http://156.67.219.143/v1/lapor/?include[]=kategori.*';
-    const token = accessToken;
-    fetch(url, {
-      method: 'GET',
-      headers: {
-        Authorization: 'Bearer ' + token,
-      },
-    })
-      .then(res => res.json())
-      .then(resJson => {
-        console.log(resJson.data);
-        if (resJson.data) {
-          this.setState({data: resJson.data, loading: false});
-        }
+    AsyncStorage.getItem('access').then(value => {
+      this.setState({loading: true});
+      const url = 'https://api.istudios.id/v1/lapor/?include[]=kategori.*';
+      const token = value;
+      fetch(url, {
+        method: 'GET',
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
       })
-      .catch(er => {
-        this.setState({loading: false});
-        console.log(er);
-      });
+        .then(res => res.json())
+        .then(resJson => {
+          console.log(resJson.data);
+          if (resJson.data) {
+            this.setState({data: resJson.data, loading: false});
+            ToastAndroid.show(
+              'Data berhasil didapatkan',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+          } else {
+            this.setState({loading: false});
+            ToastAndroid.show(
+              'Data gagal didapatkan',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+          }
+        })
+        .catch(er => {
+          this.setState({loading: false});
+          console.log(er);
+          ToastAndroid.show(
+            'Jaringan error',
+            ToastAndroid.SHORT,
+            ToastAndroid.CENTER,
+          );
+        });
+    });
   };
   render() {
     return (

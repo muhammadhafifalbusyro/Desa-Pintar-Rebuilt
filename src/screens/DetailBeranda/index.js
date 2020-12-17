@@ -31,7 +31,7 @@ class DetailBeranda extends React.Component {
         <ScrollView style={styles.scroll}>
           <View style={styles.boxBanner}>
             <Image
-              source={require('../../assets/images/banner.png')}
+              source={{uri: this.props.route.params.item.gambar}}
               style={styles.banner}
             />
           </View>

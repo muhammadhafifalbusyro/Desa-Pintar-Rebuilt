@@ -9,24 +9,34 @@ import {
   TouchableNativeFeedback,
   TextInput,
   ImageBackground,
+  Modal,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 
 class PetaDetail extends React.Component {
   state = {
     promosi: false,
+    dropdown: false,
+    metodeDefault: 'Jual',
+    metodeList: [
+      {
+        id: 1,
+        metode: 'Jual',
+      },
+      {
+        id: 2,
+        metode: 'Sewa',
+      },
+      {
+        id: 3,
+        metode: 'Kerja Sama',
+      },
+    ],
   };
-  promosi = () => {
-    if (this.state.promosi) {
+  methodeView = () => {
+    if (this.state.metodeDefault == 'Jual') {
       return (
         <View style={{width: '100%'}}>
-          <View style={styles.boxContent}>
-            <Text style={styles.text1}>Jual/Sewa/Kerja sama</Text>
-            <View style={styles.childBox}>
-              <Text>Jual</Text>
-              <Icon name="chevron-down" size={25} />
-            </View>
-          </View>
           <View style={styles.boxContent}>
             <Text style={styles.text1}>Harga Per M2</Text>
             <TextInput style={styles.childBox} placeholder="Masukan Harga" />
@@ -60,11 +70,154 @@ class PetaDetail extends React.Component {
           </View>
         </View>
       );
+    } else if (this.state.metodeDefault == 'Sewa') {
+      return (
+        <View style={{width: '100%'}}>
+          <View style={styles.boxContent}>
+            <Text style={styles.text1}>Harga Sewa Per Tahun</Text>
+            <TextInput style={styles.childBox} placeholder="Masukan Harga" />
+          </View>
+          <View style={styles.boxContent}>
+            <Text style={styles.text1}>Narasi</Text>
+            <TextInput
+              style={{
+                ...styles.childBox,
+                height: 150,
+              }}
+              placeholder="Masukan Narasi"
+              textAlignVertical="top"
+            />
+          </View>
+          <View style={styles.boxContent}>
+            <TouchableNativeFeedback>
+              <View
+                style={{
+                  ...styles.childBox,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: '#19D2BA',
+                  borderColor: 'white',
+                }}
+                placeholder="Masukan Deskripsi"
+                textAlignVertical="top">
+                <Text style={{color: 'white'}}>PUBLISH</Text>
+              </View>
+            </TouchableNativeFeedback>
+          </View>
+        </View>
+      );
+    } else if (this.state.metodeDefault == 'Kerja Sama') {
+      return (
+        <View style={{width: '100%'}}>
+          <View style={styles.boxContent}>
+            <Text style={styles.text1}>Narasi</Text>
+            <TextInput
+              style={{
+                ...styles.childBox,
+                height: 150,
+              }}
+              placeholder="Masukan Narasi"
+              textAlignVertical="top"
+            />
+          </View>
+          <View style={styles.boxContent}>
+            <TouchableNativeFeedback>
+              <View
+                style={{
+                  ...styles.childBox,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: '#19D2BA',
+                  borderColor: 'white',
+                }}
+                placeholder="Masukan Deskripsi"
+                textAlignVertical="top">
+                <Text style={{color: 'white'}}>PUBLISH</Text>
+              </View>
+            </TouchableNativeFeedback>
+          </View>
+        </View>
+      );
+    }
+  };
+  promosi = () => {
+    if (this.state.promosi) {
+      return (
+        <View style={{width: '100%'}}>
+          <View style={styles.boxContent}>
+            <Text style={styles.text1}>Jual/Sewa/Kerja sama</Text>
+            <View style={styles.childBox}>
+              <Text>{this.state.metodeDefault}</Text>
+              <Icon
+                name="chevron-down"
+                size={25}
+                onPress={() => this.setState({dropdown: true})}
+              />
+            </View>
+          </View>
+          {this.methodeView()}
+        </View>
+      );
     }
   };
   render() {
     return (
       <View style={styles.container}>
+        <Modal
+          visible={this.state.dropdown}
+          animationType="slide"
+          transparent={true}
+          onRequestClose={() => this.setState({dropdown: false})}>
+          <View
+            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            <View
+              style={{
+                height: '30%',
+                width: '90%',
+                backgroundColor: 'white',
+                elevation: 5,
+                borderRadius: 5,
+              }}>
+              <View
+                style={{
+                  height: 50,
+                  width: '100%',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  borderBottomWidth: 1,
+                  borderColor: 'rgba(0,0,0,0.3)',
+                }}>
+                <Text style={{fontWeight: 'bold'}}>Pilih Metode</Text>
+              </View>
+              <ScrollView style={{flex: 1, padding: 10}}>
+                {this.state.metodeList.map((value, key) => {
+                  return (
+                    <View
+                      key={key}
+                      style={{
+                        height: 40,
+                        marginBottom: 3,
+                        width: '100%',
+                        padding: 5,
+                        borderBottomWidth: 1,
+                        borderColor: 'rgba(0,0,0,0.3)',
+                      }}>
+                      <Text
+                        onPress={() =>
+                          this.setState({
+                            metodeDefault: value.metode,
+                            dropdown: false,
+                          })
+                        }>
+                        {value.metode}
+                      </Text>
+                    </View>
+                  );
+                })}
+              </ScrollView>
+            </View>
+          </View>
+        </Modal>
         <View style={styles.header}>
           <Icon
             name="arrow-left"

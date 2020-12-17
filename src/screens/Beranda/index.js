@@ -13,6 +13,7 @@ import {
   RefreshControl,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const width = Dimensions.get('window').width;
 const accessToken =
@@ -26,6 +27,7 @@ class Beranda extends React.Component {
     dataInformasi: [],
     dataPotensi: [],
     loading: false,
+    search: '',
   };
   componentDidMount() {
     this.getDataBerita();
@@ -33,112 +35,133 @@ class Beranda extends React.Component {
     this.getDataPotensi();
   }
   getDataBerita = () => {
-    this.setState({loading: true});
-    const url = 'http://156.67.219.143/v1/artikel/?include[]=kategori.*';
-    const token = accessToken;
-    fetch(url, {
-      method: 'GET',
-      headers: {
-        Authorization: 'Bearer ' + token,
-      },
-    })
-      .then(res => res.json())
-      .then(resJson => {
-        console.log(resJson);
-        if (resJson.data) {
-          this.setState({data: resJson.data, loading: false});
-        } else if (resJson.code) {
-          this.setState({loading: false});
-          ToastAndroid.show(
-            resJson.code,
-            ToastAndroid.SHORT,
-            ToastAndroid.CENTER,
-          );
-        } else {
-          this.setState({loading: false});
-          ToastAndroid.show(
-            resJson.code,
-            ToastAndroid.SHORT,
-            ToastAndroid.CENTER,
-          );
-        }
+    AsyncStorage.getItem('access').then(value => {
+      this.setState({loading: true});
+      const url = 'https://api.istudios.id/v1/artikel/?include[]=kategori.*';
+      const token = value;
+      fetch(url, {
+        method: 'GET',
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
       })
-      .catch(er => {
-        this.setState({loading: false});
-        console.log(er);
-      });
+        .then(res => res.json())
+        .then(resJson => {
+          console.log(resJson);
+          if (resJson.data) {
+            this.setState({data: resJson.data, loading: false});
+          } else if (resJson.code) {
+            this.setState({loading: false});
+            ToastAndroid.show(
+              resJson.code,
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+          } else {
+            this.setState({loading: false});
+            ToastAndroid.show(
+              resJson.code,
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+          }
+        })
+        .catch(er => {
+          this.setState({loading: false});
+          console.log(er);
+          ToastAndroid.show(
+            'Jaringan error',
+            ToastAndroid.SHORT,
+            ToastAndroid.CENTER,
+          );
+        });
+    });
   };
   getDataInformasi = () => {
-    this.setState({loading: true});
-    const url = 'http://156.67.219.143/v1/informasi/?include[]=kategori.*';
-    const token = accessToken;
-    fetch(url, {
-      method: 'GET',
-      headers: {
-        Authorization: 'Bearer ' + token,
-      },
-    })
-      .then(res => res.json())
-      .then(resJson => {
-        console.log(resJson);
-        if (resJson.data) {
-          this.setState({dataInformasi: resJson.data, loading: false});
-        } else if (resJson.code) {
-          this.setState({loading: false});
-          ToastAndroid.show(
-            resJson.code,
-            ToastAndroid.SHORT,
-            ToastAndroid.CENTER,
-          );
-        } else {
-          this.setState({loading: false});
-          ToastAndroid.show(
-            resJson.code,
-            ToastAndroid.SHORT,
-            ToastAndroid.CENTER,
-          );
-        }
+    AsyncStorage.getItem('access').then(value => {
+      this.setState({loading: true});
+      const url = 'https://api.istudios.id/v1/informasi/?include[]=kategori.*';
+      const token = value;
+      fetch(url, {
+        method: 'GET',
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
       })
-      .catch(er => {
-        this.setState({loading: false});
-        console.log(er);
-      });
+        .then(res => res.json())
+        .then(resJson => {
+          console.log(resJson);
+          if (resJson.data) {
+            this.setState({dataInformasi: resJson.data, loading: false});
+          } else if (resJson.code) {
+            this.setState({loading: false});
+            ToastAndroid.show(
+              resJson.code,
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+          } else {
+            this.setState({loading: false});
+            ToastAndroid.show(
+              resJson.code,
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+          }
+        })
+        .catch(er => {
+          this.setState({loading: false});
+          console.log(er);
+          ToastAndroid.show(
+            'Jaringan error',
+            ToastAndroid.SHORT,
+            ToastAndroid.CENTER,
+          );
+        });
+    });
   };
   getDataPotensi = () => {
-    this.setState({loading: true});
-    const url = 'http://156.67.219.143/v1/potensi/?include[]=kategori.*';
-    const token = accessToken;
-    fetch(url, {
-      method: 'GET',
-      headers: {
-        Authorization: 'Bearer ' + token,
-      },
-    })
-      .then(res => res.json())
-      .then(resJson => {
-        console.log(resJson);
-        if (resJson.data) {
-          this.setState({dataPotensi: resJson.data, loading: false});
-        } else if (resJson.code) {
-          this.setState({loading: false});
-          ToastAndroid.show(
-            resJson.code,
-            ToastAndroid.SHORT,
-            ToastAndroid.CENTER,
-          );
-        } else {
-          this.setState({loading: false});
-          ToastAndroid.show(
-            resJson.code,
-            ToastAndroid.SHORT,
-            ToastAndroid.CENTER,
-          );
-        }
+    AsyncStorage.getItem('access').then(value => {
+      this.setState({loading: true});
+      const url = 'https://api.istudios.id/v1/potensi/?include[]=kategori.*';
+      const token = value;
+      fetch(url, {
+        method: 'GET',
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
       })
-      .catch(er => {
-        this.setState({loading: false});
-        console.log(er);
-      });
+        .then(res => res.json())
+        .then(resJson => {
+          console.log(resJson);
+          if (resJson.data) {
+            this.setState({dataPotensi: resJson.data, loading: false});
+          } else if (resJson.code) {
+            this.setState({loading: false});
+            ToastAndroid.show(
+              resJson.code,
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+          } else {
+            this.setState({loading: false});
+            ToastAndroid.show(
+              resJson.code,
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+          }
+        })
+        .catch(er => {
+          this.setState({loading: false});
+          console.log(er);
+          ToastAndroid.show(
+            'Jaringan error',
+            ToastAndroid.SHORT,
+            ToastAndroid.CENTER,
+          );
+        });
+    });
   };
   renderInfo = () => {
     if (this.state.navDef == 'Berita') {
@@ -146,10 +169,7 @@ class Beranda extends React.Component {
         return (
           <View key={key} style={styles.boxContainer}>
             <View style={styles.boxContent}>
-              <Image
-                source={require('../../assets/images/banner.png')}
-                style={styles.images}
-              />
+              <Image source={{uri: value.gambar}} style={styles.images} />
               <Text style={styles.text1}>{value.judul}</Text>
               <Icon
                 name="chevron-right"
@@ -188,31 +208,63 @@ class Beranda extends React.Component {
         );
       });
     } else if (this.state.navDef == 'Potensi') {
+      return (
+        <View style={styles.boxContainer}>
+          <View style={styles.contentContainer}>
+            <View style={styles.boxContentSearch}>
+              <TextInput
+                placeholder="Cari Potensi"
+                style={{width: '90%'}}
+                value={this.state.search}
+                onChangeText={teks => this.setState({search: teks})}
+              />
+              <Icon name="search" size={20} />
+            </View>
+          </View>
+          {this.filterPotensi()}
+        </View>
+      );
+    }
+  };
+  filterPotensi = () => {
+    if (this.state.search == '') {
       return this.state.dataPotensi.map((value, key) => {
         return (
-          <View key={key} style={styles.boxContainer}>
-            <View style={styles.contentContainer}>
-              <View style={styles.boxContentSearch}>
-                <TextInput placeholder="Cari Potensi" style={{width: '90%'}} />
-                <Icon name="search" size={20} />
-              </View>
-            </View>
-            <View style={styles.boxContent}>
-              <Image
-                source={require('../../assets/images/banner.png')}
-                style={styles.images}
-              />
-              <Text style={styles.text1}>{value.judul}</Text>
-              <Icon
-                name="chevron-right"
-                size={40}
-                onPress={() =>
-                  this.props.navigation.navigate('DetailBeranda', {
-                    item: value,
-                  })
-                }
-              />
-            </View>
+          <View style={{...styles.boxContent, marginBottom: 10}} key={key}>
+            <Image source={{uri: value.gambar}} style={styles.images} />
+            <Text style={styles.text1}>{value.judul}</Text>
+            <Icon
+              name="chevron-right"
+              size={40}
+              onPress={() =>
+                this.props.navigation.navigate('DetailBeranda', {
+                  item: value,
+                })
+              }
+            />
+          </View>
+        );
+      });
+    } else {
+      let newDataPotensi = this.state.dataPotensi.filter(elemen => {
+        let nameLowerCase = elemen.judul.toLowerCase();
+        let searchLowerCase = this.state.search.toLowerCase();
+        return nameLowerCase.includes(searchLowerCase);
+      });
+      return newDataPotensi.map((value, key) => {
+        return (
+          <View style={{...styles.boxContent, marginBottom: 10}} key={key}>
+            <Image source={{uri: value.gambar}} style={styles.images} />
+            <Text style={styles.text1}>{value.judul}</Text>
+            <Icon
+              name="chevron-right"
+              size={40}
+              onPress={() =>
+                this.props.navigation.navigate('DetailBeranda', {
+                  item: value,
+                })
+              }
+            />
           </View>
         );
       });

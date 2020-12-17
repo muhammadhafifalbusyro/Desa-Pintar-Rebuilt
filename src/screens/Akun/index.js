@@ -7,9 +7,72 @@ import {
   Image,
   TouchableOpacity,
   TouchableNativeFeedback,
+  ToastAndroid,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class Akun extends React.Component {
+  state = {
+    nama: '',
+    nik: '',
+    tempatLahir: '',
+    tanggalLahir: '',
+    alamat: '',
+    jenisKelamin: '',
+    pendidikanTerakhir: '',
+    potensi: '',
+  };
+  componentDidMount() {
+    this.getData();
+  }
+
+  getData = () => {
+    AsyncStorage.getItem('access').then(value => {
+      console.log('ini token profil ' + value);
+      const url = 'https://api.istudios.id/v1/users/me';
+      fetch(url, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${value}`,
+        },
+      })
+        .then(res => res.json())
+        .then(reJson => {
+          console.log(reJson);
+          if (reJson.profile) {
+            this.setState({
+              nama: reJson.profile.nama,
+              nik: reJson.profile.nik,
+              tempatLahir: reJson.profile.tempat_lahir,
+              tanggalLahir: reJson.profile.tanggal_lahir,
+              jenisKelamin: reJson.profile.kelamin,
+              pendidikanTerakhir: reJson.profile.pendidikan,
+              potensi: reJson.profile.potensi,
+              alamat: reJson.profile.alamat,
+            });
+            ToastAndroid.show(
+              'Berhasil mengambil data',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+          } else {
+            ToastAndroid.show(
+              'Gagal mengambil data',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+          }
+        })
+        .catch(er => {
+          console.log(er);
+          ToastAndroid.show(
+            'Jaringan error',
+            ToastAndroid.SHORT,
+            ToastAndroid.CENTER,
+          );
+        });
+    });
+  };
   render() {
     return (
       <View style={styles.container}>
@@ -23,8 +86,8 @@ class Akun extends React.Component {
               style={styles.profileImage}
             />
             <View style={styles.profileContent}>
-              <Text style={styles.textProfileContent}>Yudistira</Text>
-              <Text style={styles.textProfileContent}>3175010312990003</Text>
+              <Text style={styles.textProfileContent}>{this.state.nama}</Text>
+              <Text style={styles.textProfileContent}>{this.state.nik}</Text>
               <TouchableOpacity
                 style={styles.buttonEditProfile}
                 activeOpacity={0.8}
@@ -35,23 +98,27 @@ class Akun extends React.Component {
           </View>
           <View style={styles.boxProfile2}>
             <Text style={styles.textProfile}>Tempat & Tanggal Lahir</Text>
-            <Text style={styles.textprofile2}>Kalten, 10 Maret</Text>
+            <Text style={styles.textprofile2}>
+              {this.state.tempatLahir}, {this.state.tanggalLahir}
+            </Text>
           </View>
           <View style={styles.boxProfile2}>
             <Text style={styles.textProfile}>Alamat</Text>
-            <Text style={styles.textprofile2}>Jalan Pisangan Baru 3</Text>
+            <Text style={styles.textprofile2}>{this.state.alamat}</Text>
           </View>
           <View style={styles.boxProfile2}>
             <Text style={styles.textProfile}>Jenis Kelamin</Text>
-            <Text style={styles.textprofile2}>Laki-Laki</Text>
+            <Text style={styles.textprofile2}>{this.state.jenisKelamin}</Text>
           </View>
           <View style={styles.boxProfile2}>
             <Text style={styles.textProfile}>Pendidikan Terakhir</Text>
-            <Text style={styles.textprofile2}>S1</Text>
+            <Text style={styles.textprofile2}>
+              {this.state.pendidikanTerakhir}
+            </Text>
           </View>
           <View style={styles.boxProfile2}>
             <Text style={styles.textProfile}>Potensi</Text>
-            <Text style={styles.textprofile2}>Surveyor</Text>
+            <Text style={styles.textprofile2}>{this.state.potensi}</Text>
           </View>
           <View style={styles.boxLogout}>
             <TouchableNativeFeedback

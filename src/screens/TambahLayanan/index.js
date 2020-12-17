@@ -9,15 +9,79 @@ import {
   TouchableNativeFeedback,
   TextInput,
   ImageBackground,
+  ToastAndroid,
+  Modal,
+  ActivityIndicator,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class TambahLayanan extends React.Component {
   state = {
     icon: true,
     promosi: false,
+    nama: '',
+    tempatLahir: '',
+    tanggalLahir: '',
+    jenisKelamin: '',
+    agama: '',
+    pekerjaan: '',
+    alamat: '',
+    keperluan: '',
+    token: '',
+    modalVisible: false,
   };
+  componentDidMount() {
+    this.getData();
+  }
 
+  getData = () => {
+    AsyncStorage.getItem('access').then(value => {
+      console.log('ini token profil ' + value);
+      const url = 'https://api.istudios.id/v1/users/me';
+      fetch(url, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${value}`,
+        },
+      })
+        .then(res => res.json())
+        .then(reJson => {
+          console.log(reJson);
+          if (reJson.profile) {
+            this.setState({
+              nama: reJson.profile.nama,
+              tempatLahir: reJson.profile.tempat_lahir,
+              tanggalLahir: reJson.profile.tanggal_lahir,
+              jenisKelamin: reJson.profile.kelamin,
+              alamat: reJson.profile.alamat,
+              agama: reJson.profile.agama,
+              pekerjaan: reJson.profile.pekerjaan,
+              token: value,
+            });
+            ToastAndroid.show(
+              'Berhasil mengambil data',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+          } else {
+            ToastAndroid.show(
+              'Gagal mengambil data',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+          }
+        })
+        .catch(er => {
+          console.log(er);
+          ToastAndroid.show(
+            'Gagal mengambil data',
+            ToastAndroid.SHORT,
+            ToastAndroid.CENTER,
+          );
+        });
+    });
+  };
   iconRender = () => {
     if (this.state.icon) {
       return (
@@ -55,9 +119,79 @@ class TambahLayanan extends React.Component {
       );
     }
   };
+  tambahLayanan = () => {
+    this.setState({modalVisible: true});
+    const url = 'https://api.istudios.id/v1/domisili/';
+
+    const formData = new FormData();
+    formData.append('keperluan', this.state.keperluan);
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${this.state.token}`,
+      },
+      body: formData,
+    })
+      .then(res => res.json())
+      .then(resJson => {
+        console.log(resJson);
+        if (resJson.data) {
+          ToastAndroid.show(
+            'Berhasil ditambahkan',
+            ToastAndroid.SHORT,
+            ToastAndroid.CENTER,
+          );
+          this.setState({modalVisible: false});
+        } else {
+          ToastAndroid.show(
+            'Gagal ditambahkan',
+            ToastAndroid.SHORT,
+            ToastAndroid.CENTER,
+          );
+          this.setState({modalVisible: false});
+        }
+      })
+      .catch(er => {
+        console.log(er);
+        ToastAndroid.show(
+          'Jaringan error',
+          ToastAndroid.SHORT,
+          ToastAndroid.CENTER,
+        );
+        this.setState({modalVisible: false});
+      });
+  };
   render() {
     return (
       <View style={styles.container}>
+        <Modal
+          visible={this.state.modalVisible}
+          animationType="slide"
+          transparent={true}
+          onRequestClose={() => {
+            ToastAndroid.show(
+              'Tunggu proses selesai',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+          }}>
+          <View
+            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            <View
+              style={{
+                height: 100,
+                width: 100,
+                backgroundColor: 'white',
+                elevation: 5,
+                borderRadius: 5,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <ActivityIndicator size="large" color="#19d2ba" />
+              <Text>Loading...</Text>
+            </View>
+          </View>
+        </Modal>
         <View style={styles.header}>
           <Icon
             name="arrow-left"
@@ -93,49 +227,102 @@ class TambahLayanan extends React.Component {
           <View style={styles.boxInput}>
             <View style={styles.childBoxInput}>
               <Text style={styles.label}>Nama Lengkap</Text>
-              <TextInput style={styles.textInput} />
+              {/* <TextInput style={styles.textInput} /> */}
+              <View
+                style={{
+                  ...styles.textInput,
+                  justifyContent: 'center',
+                  padding: 5,
+                }}>
+                <Text>{this.state.nama}</Text>
+              </View>
             </View>
           </View>
           <View style={styles.boxInput}>
             <View style={styles.childBoxInput}>
               <Text style={styles.label}>Tempat/ Tanggal Lahir</Text>
-              <TextInput style={styles.textInput} />
+              <View
+                style={{
+                  ...styles.textInput,
+                  justifyContent: 'center',
+                  padding: 5,
+                }}>
+                <Text>
+                  {this.state.tempatLahir}, {this.state.tanggalLahir}
+                </Text>
+              </View>
             </View>
           </View>
           <View style={styles.boxInput}>
             <View style={styles.childBoxInput}>
               <Text style={styles.label}>Jenis Kelamin</Text>
-              <TextInput style={styles.textInput} />
+              <View
+                style={{
+                  ...styles.textInput,
+                  justifyContent: 'center',
+                  padding: 5,
+                }}>
+                <Text>{this.state.jenisKelamin}</Text>
+              </View>
             </View>
           </View>
           <View style={styles.boxInput}>
             <View style={styles.childBoxInput}>
               <Text style={styles.label}>Agama</Text>
-              <TextInput style={styles.textInput} />
+              <View
+                style={{
+                  ...styles.textInput,
+                  justifyContent: 'center',
+                  padding: 5,
+                }}>
+                <Text>{this.state.agama}</Text>
+              </View>
             </View>
           </View>
           <View style={styles.boxInput}>
             <View style={styles.childBoxInput}>
               <Text style={styles.label}>Pekerjaan</Text>
-              <TextInput style={styles.textInput} />
+              <View
+                style={{
+                  ...styles.textInput,
+                  justifyContent: 'center',
+                  padding: 5,
+                }}>
+                <Text>{this.state.pekerjaan}</Text>
+              </View>
             </View>
           </View>
           <View style={styles.boxInput}>
             <View style={styles.childBoxInput}>
               <Text style={styles.label}>Alamat</Text>
-              <TextInput style={styles.textInput} />
+              <View
+                style={{
+                  ...styles.textInput,
+                  justifyContent: 'center',
+                  padding: 5,
+                }}>
+                <Text>{this.state.alamat}</Text>
+              </View>
             </View>
           </View>
           <View style={styles.boxInput}>
             <View style={styles.childBoxInput}>
               <Text style={styles.label}>Keperluan</Text>
-              <TextInput style={styles.textInput} />
+              <TextInput
+                style={styles.textInput}
+                value={this.state.keperluan}
+                onChangeText={teks => this.setState({keperluan: teks})}
+              />
             </View>
           </View>
           <View style={styles.boxLogout}>
             <TouchableNativeFeedback>
               <View style={styles.buttonLogout}>
-                <Text style={styles.textButtonLogout}>SUBMIT</Text>
+                <Text
+                  style={styles.textButtonLogout}
+                  onPress={() => this.tambahLayanan()}>
+                  SUBMIT
+                </Text>
               </View>
             </TouchableNativeFeedback>
           </View>

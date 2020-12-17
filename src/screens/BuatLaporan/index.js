@@ -14,6 +14,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import ImagePicker from 'react-native-image-picker';
 const options = {
@@ -24,8 +25,8 @@ const options = {
   },
 };
 
-const accessToken =
-  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjA3ODMyODMwLCJqdGkiOiJhMGU1ZTRjYzYxZDI0MWVjOWIyZTIxOTQxZWEyMDFlNSIsInVzZXJfaWQiOjF9.n33NInIK_xvOg74F1KMJIBikzlZn2_6dZAr8qEip8WM';
+// const accessToken =
+//   'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjA3ODMyODMwLCJqdGkiOiJhMGU1ZTRjYzYxZDI0MWVjOWIyZTIxOTQxZWEyMDFlNSIsInVzZXJfaWQiOjF9.n33NInIK_xvOg74F1KMJIBikzlZn2_6dZAr8qEip8WM';
 class BuatLaporan extends React.Component {
   state = {
     avatarSource: '',
@@ -45,39 +46,41 @@ class BuatLaporan extends React.Component {
     this.getDataKategori();
   }
   getDataKategori = () => {
-    const token = accessToken;
-    const url = 'http://156.67.219.143/v1/kategorilapor/';
-    fetch(url, {
-      method: 'GET',
-      headers: {
-        Authorization: 'Bearer ' + token,
-      },
-    })
-      .then(res => res.json())
-      .then(resJson => {
-        if (resJson.data) {
-          this.setState({dataKategori: resJson.data});
-          ToastAndroid.show(
-            'Data berhasil didapatkan',
-            ToastAndroid.SHORT,
-            ToastAndroid.CENTER,
-          );
-        } else {
-          console.log('error');
+    AsyncStorage.getItem('access').then(value => {
+      const token = value;
+      const url = 'http://156.67.219.143/v1/kategorilapor/';
+      fetch(url, {
+        method: 'GET',
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      })
+        .then(res => res.json())
+        .then(resJson => {
+          if (resJson.data) {
+            this.setState({dataKategori: resJson.data});
+            ToastAndroid.show(
+              'Data berhasil didapatkan',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+          } else {
+            console.log('error');
+            ToastAndroid.show(
+              'Data gagal didapatkan',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+          }
+        })
+        .catch(er => {
           ToastAndroid.show(
             'Data gagal didapatkan',
             ToastAndroid.SHORT,
             ToastAndroid.CENTER,
           );
-        }
-      })
-      .catch(er => {
-        ToastAndroid.show(
-          'Data gagal didapatkan',
-          ToastAndroid.SHORT,
-          ToastAndroid.CENTER,
-        );
-      });
+        });
+    });
   };
   pickerImage = () => {
     ImagePicker.showImagePicker(options, response => {
@@ -134,77 +137,84 @@ class BuatLaporan extends React.Component {
     }
   };
   submit = () => {
-    const {fileName, kategoriID, judul, deskripsi} = this.state;
-    const url = 'http://156.67.219.143/v1/lapor/';
-    if (fileName != '' && kategoriID != '' && judul != '' && deskripsi != '') {
-      this.setState({modalVisible: true});
-      let image = {
-        uri: this.state.uri,
-        type: this.state.type,
-        name: this.state.fileName,
-      };
+    AsyncStorage.getItem('access').then(value => {
+      const {fileName, kategoriID, judul, deskripsi} = this.state;
+      const url = 'https://api.istudios.id/v1/lapor/';
+      if (
+        fileName != '' &&
+        kategoriID != '' &&
+        judul != '' &&
+        deskripsi != ''
+      ) {
+        this.setState({modalVisible: true});
+        let image = {
+          uri: this.state.uri,
+          type: this.state.type,
+          name: this.state.fileName,
+        };
 
-      const formData = new FormData();
+        const formData = new FormData();
 
-      formData.append('kategori', kategoriID);
-      formData.append('judul', judul);
-      formData.append('isi', deskripsi);
-      formData.append('gambar', image);
+        formData.append('kategori', kategoriID);
+        formData.append('judul', judul);
+        formData.append('isi', deskripsi);
+        formData.append('gambar', image);
 
-      console.log(formData);
-      if (this.state.fileSize >= 1500000) {
-        this.setState({modalVisible: false});
+        console.log(formData);
+        if (this.state.fileSize >= 1500000) {
+          this.setState({modalVisible: false});
+          ToastAndroid.show(
+            'Foto terlalu besar, maksimal 1,5 MB',
+            ToastAndroid.SHORT,
+            ToastAndroid.CENTER,
+          );
+        } else {
+          fetch(url, {
+            method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'multipart/form-data',
+              Authorization: `Bearer ${value}`,
+            },
+            body: formData,
+          })
+            .then(response => response.json())
+            .then(json => {
+              if (json.data) {
+                this.setState({modalVisible: false});
+                ToastAndroid.show(
+                  'Laporan berhasil ditambahkan',
+                  ToastAndroid.SHORT,
+                  ToastAndroid.CENTER,
+                );
+                this.props.navigation.goBack();
+              } else {
+                this.setState({modalVisible: false});
+                ToastAndroid.show(
+                  'Laporan gagal ditambahkan',
+                  ToastAndroid.SHORT,
+                  ToastAndroid.CENTER,
+                );
+              }
+            })
+            .catch(error => {
+              this.setState({modalVisible: false});
+              console.log(error);
+              ToastAndroid.show(
+                'Jaringan error',
+                ToastAndroid.SHORT,
+                ToastAndroid.CENTER,
+              );
+            });
+        }
+      } else {
         ToastAndroid.show(
-          'Foto terlalu besar, maksimal 1,5 MB',
+          'Data tidak boleh kosong',
           ToastAndroid.SHORT,
           ToastAndroid.CENTER,
         );
-      } else {
-        fetch(url, {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'multipart/form-data',
-            Authorization: `Bearer ${accessToken}`,
-          },
-          body: formData,
-        })
-          .then(response => response.json())
-          .then(json => {
-            if (json.data) {
-              this.setState({modalVisible: false});
-              ToastAndroid.show(
-                'Laporan berhasil ditambahkan',
-                ToastAndroid.SHORT,
-                ToastAndroid.CENTER,
-              );
-              this.props.navigation.goBack();
-            } else {
-              this.setState({modalVisible: false});
-              ToastAndroid.show(
-                'Laporan gagal ditambahkan',
-                ToastAndroid.SHORT,
-                ToastAndroid.CENTER,
-              );
-            }
-          })
-          .catch(error => {
-            this.setState({modalVisible: false});
-            console.log(error);
-            ToastAndroid.show(
-              'Network error',
-              ToastAndroid.SHORT,
-              ToastAndroid.CENTER,
-            );
-          });
       }
-    } else {
-      ToastAndroid.show(
-        'Data tidak boleh kosong',
-        ToastAndroid.SHORT,
-        ToastAndroid.CENTER,
-      );
-    }
+    });
   };
   render() {
     return (
