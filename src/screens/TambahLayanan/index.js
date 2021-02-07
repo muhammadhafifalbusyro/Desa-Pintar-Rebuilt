@@ -233,6 +233,7 @@ class TambahLayanan extends React.Component {
                   ...styles.textInput,
                   justifyContent: 'center',
                   padding: 5,
+                  backgroundColor: 'rgba(0,0,0,0.1)',
                 }}>
                 <Text>{this.state.nama}</Text>
               </View>
@@ -246,6 +247,7 @@ class TambahLayanan extends React.Component {
                   ...styles.textInput,
                   justifyContent: 'center',
                   padding: 5,
+                  backgroundColor: 'rgba(0,0,0,0.1)',
                 }}>
                 <Text>
                   {this.state.tempatLahir}, {this.state.tanggalLahir}
@@ -261,6 +263,7 @@ class TambahLayanan extends React.Component {
                   ...styles.textInput,
                   justifyContent: 'center',
                   padding: 5,
+                  backgroundColor: 'rgba(0,0,0,0.1)',
                 }}>
                 <Text>{this.state.jenisKelamin}</Text>
               </View>
@@ -274,6 +277,7 @@ class TambahLayanan extends React.Component {
                   ...styles.textInput,
                   justifyContent: 'center',
                   padding: 5,
+                  backgroundColor: 'rgba(0,0,0,0.1)',
                 }}>
                 <Text>{this.state.agama}</Text>
               </View>
@@ -287,6 +291,7 @@ class TambahLayanan extends React.Component {
                   ...styles.textInput,
                   justifyContent: 'center',
                   padding: 5,
+                  backgroundColor: 'rgba(0,0,0,0.1)',
                 }}>
                 <Text>{this.state.pekerjaan}</Text>
               </View>
@@ -300,6 +305,7 @@ class TambahLayanan extends React.Component {
                   ...styles.textInput,
                   justifyContent: 'center',
                   padding: 5,
+                  backgroundColor: 'rgba(0,0,0,0.1)',
                 }}>
                 <Text>{this.state.alamat}</Text>
               </View>

@@ -37,7 +37,7 @@ class Beranda extends React.Component {
   getDataBerita = () => {
     AsyncStorage.getItem('access').then(value => {
       this.setState({loading: true});
-      const url = 'https://api.istudios.id/v1/artikel/?include[]=kategori.*';
+      const url = 'https://api.istudios.id/v1/artikel/';
       const token = value;
       fetch(url, {
         method: 'GET',
@@ -80,7 +80,7 @@ class Beranda extends React.Component {
   getDataInformasi = () => {
     AsyncStorage.getItem('access').then(value => {
       this.setState({loading: true});
-      const url = 'https://api.istudios.id/v1/informasi/?include[]=kategori.*';
+      const url = 'https://api.istudios.id/v1/informasi/';
       const token = value;
       fetch(url, {
         method: 'GET',
@@ -123,7 +123,7 @@ class Beranda extends React.Component {
   getDataPotensi = () => {
     AsyncStorage.getItem('access').then(value => {
       this.setState({loading: true});
-      const url = 'https://api.istudios.id/v1/potensi/?include[]=kategori.*';
+      const url = 'https://api.istudios.id/v1/potensi/';
       const token = value;
       fetch(url, {
         method: 'GET',
@@ -135,7 +135,8 @@ class Beranda extends React.Component {
         .then(resJson => {
           console.log(resJson);
           if (resJson.data) {
-            this.setState({dataPotensi: resJson.data, loading: false});
+            const dataReverse = resJson.data.reverse();
+            this.setState({dataPotensi: dataReverse, loading: false});
           } else if (resJson.code) {
             this.setState({loading: false});
             ToastAndroid.show(
@@ -168,19 +169,18 @@ class Beranda extends React.Component {
       return this.state.data.map((value, key) => {
         return (
           <View key={key} style={styles.boxContainer}>
-            <View style={styles.boxContent}>
-              <Image source={{uri: value.gambar}} style={styles.images} />
-              <Text style={styles.text1}>{value.judul}</Text>
-              <Icon
-                name="chevron-right"
-                size={40}
-                onPress={() =>
-                  this.props.navigation.navigate('DetailBeranda', {
-                    item: value,
-                  })
-                }
-              />
-            </View>
+            <TouchableNativeFeedback
+              onPress={() =>
+                this.props.navigation.navigate('DetailBeranda', {
+                  item: value,
+                })
+              }>
+              <View style={styles.boxContent}>
+                <Image source={{uri: value.gambar}} style={styles.images} />
+                <Text style={styles.text1}>{value.judul}</Text>
+                <Icon name="chevron-right" size={40} color="grey" />
+              </View>
+            </TouchableNativeFeedback>
           </View>
         );
       });
@@ -188,22 +188,18 @@ class Beranda extends React.Component {
       return this.state.dataInformasi.map((value, key) => {
         return (
           <View key={key} style={styles.boxContainer}>
-            <View style={styles.boxContent}>
-              <Image
-                source={require('../../assets/images/banner.png')}
-                style={styles.images}
-              />
-              <Text style={styles.text1}>{value.judul}</Text>
-              <Icon
-                name="chevron-right"
-                size={40}
-                onPress={() =>
-                  this.props.navigation.navigate('DetailBeranda', {
-                    item: value,
-                  })
-                }
-              />
-            </View>
+            <TouchableNativeFeedback
+              onPress={() =>
+                this.props.navigation.navigate('DetailBeranda', {
+                  item: value,
+                })
+              }>
+              <View style={styles.boxContent}>
+                <Image source={{uri: value.gambar}} style={styles.images} />
+                <Text style={styles.text1}>{value.judul}</Text>
+                <Icon name="chevron-right" size={40} color="grey" />
+              </View>
+            </TouchableNativeFeedback>
           </View>
         );
       });
@@ -218,7 +214,7 @@ class Beranda extends React.Component {
                 value={this.state.search}
                 onChangeText={teks => this.setState({search: teks})}
               />
-              <Icon name="search" size={20} />
+              <Icon name="chevron-right" size={40} color="grey" />
             </View>
           </View>
           {this.filterPotensi()}
@@ -230,19 +226,19 @@ class Beranda extends React.Component {
     if (this.state.search == '') {
       return this.state.dataPotensi.map((value, key) => {
         return (
-          <View style={{...styles.boxContent, marginBottom: 10}} key={key}>
-            <Image source={{uri: value.gambar}} style={styles.images} />
-            <Text style={styles.text1}>{value.judul}</Text>
-            <Icon
-              name="chevron-right"
-              size={40}
-              onPress={() =>
-                this.props.navigation.navigate('DetailBeranda', {
-                  item: value,
-                })
-              }
-            />
-          </View>
+          <TouchableNativeFeedback
+            key={key}
+            onPress={() =>
+              this.props.navigation.navigate('DetailBeranda', {
+                item: value,
+              })
+            }>
+            <View style={{...styles.boxContent, marginBottom: 10}}>
+              <Image source={{uri: value.gambar}} style={styles.images} />
+              <Text style={styles.text1}>{value.judul}</Text>
+              <Icon name="chevron-right" size={40} color="grey" />
+            </View>
+          </TouchableNativeFeedback>
         );
       });
     } else {
@@ -253,19 +249,19 @@ class Beranda extends React.Component {
       });
       return newDataPotensi.map((value, key) => {
         return (
-          <View style={{...styles.boxContent, marginBottom: 10}} key={key}>
-            <Image source={{uri: value.gambar}} style={styles.images} />
-            <Text style={styles.text1}>{value.judul}</Text>
-            <Icon
-              name="chevron-right"
-              size={40}
-              onPress={() =>
-                this.props.navigation.navigate('DetailBeranda', {
-                  item: value,
-                })
-              }
-            />
-          </View>
+          <TouchableNativeFeedback
+            key={key}
+            onPress={() =>
+              this.props.navigation.navigate('DetailBeranda', {
+                item: value,
+              })
+            }>
+            <View style={{...styles.boxContent, marginBottom: 10}}>
+              <Image source={{uri: value.gambar}} style={styles.images} />
+              <Text style={styles.text1}>{value.judul}</Text>
+              <Icon name="chevron-right" size={40} color="grey" />
+            </View>
+          </TouchableNativeFeedback>
         );
       });
     }

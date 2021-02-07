@@ -25,29 +25,28 @@ class Layanan extends React.Component {
           <View style={styles.contentContainer}>
             <View style={styles.boxContentSearch}>
               <TextInput placeholder="Cari Layanan" style={{width: '85%'}} />
-              <Icon name="search" size={20} />
+              <Icon name="search" size={20} color="grey" />
             </View>
           </View>
           <View style={styles.boxContainer}>
-            <View style={{...styles.boxContent, backgroundColor: '#ffda77'}}>
-              <Text style={styles.text1}>Kependudukan</Text>
-              <Icon
-                name="chevron-right"
-                size={40}
-                onPress={() => this.props.navigation.navigate('DetailLayanan')}
-              />
-            </View>
+            <TouchableNativeFeedback
+              onPress={() => this.props.navigation.navigate('DetailLayanan')}>
+              <View style={{...styles.boxContent, backgroundColor: '#ffda77'}}>
+                <Text style={styles.text1}>Kependudukan</Text>
+                <Icon name="search" size={20} color="grey" />
+              </View>
+            </TouchableNativeFeedback>
           </View>
           <View style={styles.boxContainer}>
             <View style={styles.boxContent}>
               <Text style={styles.text1}>Perizinan</Text>
-              <Icon name="chevron-right" size={40} />
+              <Icon name="search" size={20} color="grey" />
             </View>
           </View>
           <View style={styles.boxContainer}>
             <View style={{...styles.boxContent, backgroundColor: '#aee6e6'}}>
               <Text style={styles.text1}>Pendidikan</Text>
-              <Icon name="chevron-right" size={40} />
+              <Icon name="search" size={20} color="grey" />
             </View>
           </View>
         </ScrollView>

@@ -62,15 +62,15 @@ class Peta extends React.Component {
           {this.state.data.map((value, key) => {
             return (
               <View key={key} style={styles.boxContainer}>
-                <View style={styles.boxContent}>
-                  <Image source={{uri: value.image}} style={styles.images} />
-                  <Text style={styles.text1}>{value.title}</Text>
-                  <Icon
-                    name="chevron-right"
-                    size={40}
-                    onPress={() => this.props.navigation.navigate('PetaDetail')}
-                  />
-                </View>
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  onPress={() => this.props.navigation.navigate('PetaDetail')}>
+                  <View style={styles.boxContent}>
+                    <Image source={{uri: value.image}} style={styles.images} />
+                    <Text style={styles.text1}>{value.title}</Text>
+                    <Icon name="chevron-right" size={40} />
+                  </View>
+                </TouchableOpacity>
               </View>
             );
           })}

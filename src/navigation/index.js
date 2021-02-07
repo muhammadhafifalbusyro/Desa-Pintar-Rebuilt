@@ -17,6 +17,9 @@ import PetaPreview from '../screens/PetaPreview';
 import DetailLayanan from '../screens/DetailLayanan';
 import TambahLayanan from '../screens/TambahLayanan';
 import DetailBeranda from '../screens/DetailBeranda';
+import EditProfile from '../screens/EditProfile';
+import EditPotensi from '../screens/EditPotensi';
+import TambahPotensi from '../screens/TambahPotensi';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -73,7 +76,20 @@ function berandaStack() {
     </Stack.Navigator>
   );
 }
-
+function AkunStack() {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+        animationEnabled: false,
+      }}>
+      <Stack.Screen name="Akun" component={Akun} />
+      <Stack.Screen name="EditProfile" component={EditProfile} />
+      <Stack.Screen name="EditPotensi" component={EditPotensi} />
+      <Stack.Screen name="TambahPotensi" component={TambahPotensi} />
+    </Stack.Navigator>
+  );
+}
 function MainScreens() {
   return (
     <Tab.Navigator
@@ -111,7 +127,7 @@ function MainScreens() {
       <Tab.Screen name="Layanan" component={layananStack} />
       <Tab.Screen name="Peta" component={petaStack} />
       <Tab.Screen name="Lapor" component={laporStack} />
-      <Tab.Screen name="Akun" component={Akun} />
+      <Tab.Screen name="Akun" component={AkunStack} />
       {/* <Tab.Screen
         name="BuatLaporan"
         component={BuatLaporan}

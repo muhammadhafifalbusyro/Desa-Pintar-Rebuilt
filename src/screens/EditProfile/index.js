@@ -12,12 +12,12 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-class Akun extends React.Component {
+class EditProfile extends React.Component {
   state = {
     nama: '',
     nik: '',
-    tempatLahir: '',
     tanggalLahir: '',
+    tempatLahir: '',
     alamat: '',
     jenisKelamin: '',
     pendidikanTerakhir: '',
@@ -69,8 +69,8 @@ class Akun extends React.Component {
           }
         })
         .catch(er => {
-          console.log(er);
           this.setState({loading: false});
+          console.log(er);
           ToastAndroid.show(
             'Jaringan error',
             ToastAndroid.SHORT,
@@ -103,11 +103,11 @@ class Akun extends React.Component {
               <Text style={styles.textProfileContent}>{this.state.nama}</Text>
               <Text style={styles.textProfileContent}>{this.state.nik}</Text>
               <TouchableOpacity
-                onPress={() => this.props.navigation.navigate('EditProfile')}
                 style={styles.buttonEditProfile}
                 activeOpacity={0.8}
-                delayPressIn={1}>
-                <Text style={styles.textButtonEditProfile}>Edit Profile</Text>
+                delayPressIn={1}
+                onPress={() => this.props.navigation.goBack()}>
+                <Text style={styles.textButtonEditProfile}>Simpan</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -131,9 +131,22 @@ class Akun extends React.Component {
               {this.state.pendidikanTerakhir}
             </Text>
           </View>
-          <View style={styles.boxProfile2}>
-            <Text style={styles.textProfile}>Potensi</Text>
-            <Text style={styles.textprofile2}>{this.state.potensi}</Text>
+          <View style={styles.boxProfile3}>
+            <View>
+              <Text style={styles.textProfile}>Potensi</Text>
+              <Text style={styles.textprofile2}>{this.state.potensi}</Text>
+            </View>
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={() => this.props.navigation.navigate('EditPotensi')}
+              style={{
+                paddingHorizontal: 8,
+                paddingVertical: 5,
+                backgroundColor: '#19D2BA',
+                borderRadius: 3,
+              }}>
+              <Text style={{color: 'white'}}>Edit Potensi</Text>
+            </TouchableOpacity>
           </View>
           <View style={styles.boxLogout}>
             <TouchableNativeFeedback
@@ -148,7 +161,7 @@ class Akun extends React.Component {
     );
   }
 }
-export default Akun;
+export default EditProfile;
 
 const styles = StyleSheet.create({
   container: {
@@ -190,7 +203,7 @@ const styles = StyleSheet.create({
   },
   buttonEditProfile: {
     padding: 3,
-    backgroundColor: '#FA7F72',
+    backgroundColor: '#19D2BA',
     marginLeft: 10,
     marginTop: 5,
     justifyContent: 'center',
@@ -204,6 +217,12 @@ const styles = StyleSheet.create({
   },
   boxProfile2: {
     padding: 15,
+  },
+  boxProfile3: {
+    padding: 15,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   textProfile: {
     color: '#444444',

@@ -42,25 +42,24 @@ class DetailLayanan extends React.Component {
           </View>
 
           <View style={styles.boxContainer}>
-            <View style={{...styles.boxContent, backgroundColor: '#ffda77'}}>
-              <Text style={styles.text1}>Surat Keterangan Domisili</Text>
-              <Icon
-                name="chevron-right"
-                size={40}
-                onPress={() => this.props.navigation.navigate('TambahLayanan')}
-              />
-            </View>
+            <TouchableNativeFeedback
+              onPress={() => this.props.navigation.navigate('TambahLayanan')}>
+              <View style={{...styles.boxContent, backgroundColor: '#ffda77'}}>
+                <Text style={styles.text1}>Surat Keterangan Domisili</Text>
+                <Icon name="chevron-right" size={40} color="grey" />
+              </View>
+            </TouchableNativeFeedback>
           </View>
           <View style={styles.boxContainer}>
             <View style={styles.boxContent}>
               <Text style={styles.text1}>Surat Pengantar SKCK</Text>
-              <Icon name="chevron-right" size={40} />
+              <Icon name="chevron-right" size={40} color="grey" />
             </View>
           </View>
           <View style={styles.boxContainer}>
             <View style={{...styles.boxContent, backgroundColor: '#aee6e6'}}>
               <Text style={styles.text1}>Surat Keterangan Keahlian</Text>
-              <Icon name="chevron-right" size={40} />
+              <Icon name="chevron-right" size={40} color="grey" />
             </View>
           </View>
         </ScrollView>
