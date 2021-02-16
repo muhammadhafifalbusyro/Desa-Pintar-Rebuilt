@@ -209,11 +209,11 @@ class Beranda extends React.Component {
             <View style={styles.boxContentSearch}>
               <TextInput
                 placeholder="Cari Potensi"
-                style={{width: '90%'}}
+                style={{width: '95%'}}
                 value={this.state.search}
                 onChangeText={teks => this.setState({search: teks})}
               />
-              <Icon name="chevron-right" size={40} color="grey" />
+              <Icon name="search" size={25} color="grey" />
             </View>
           </View>
           {this.filterPotensi()}
