@@ -41,7 +41,9 @@ class DetailBeranda extends React.Component {
             </Text>
           </View>
           <View style={styles.textBox}>
-            <Text>{this.props.route.params.item.isi}</Text>
+            <Text style={{color: '#444444'}}>
+              {this.props.route.params.item.isi}
+            </Text>
           </View>
         </ScrollView>
       </View>
@@ -89,10 +91,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderTopWidth: 1,
     borderBottomWidth: 1,
+    borderColor: 'grey',
   },
   title: {
     textAlign: 'center',
     fontWeight: 'bold',
+    color: 'grey',
   },
   textBox: {
     padding: 10,

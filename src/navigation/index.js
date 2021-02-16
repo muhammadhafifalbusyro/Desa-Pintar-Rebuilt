@@ -120,7 +120,7 @@ function MainScreens() {
       })}
       tabBarOptions={{
         activeTintColor: '#19D2BA',
-        inactiveTintColor: 'gray',
+        inactiveTintColor: 'grey',
         showLabel: false,
       }}>
       <Tab.Screen name="Beranda" component={berandaStack} />

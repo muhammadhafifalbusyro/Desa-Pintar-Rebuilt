@@ -147,11 +147,12 @@ class PetaDetail extends React.Component {
           <View style={styles.boxContent}>
             <Text style={styles.text1}>Jual/Sewa/Kerja sama</Text>
             <View style={styles.childBox}>
-              <Text>{this.state.metodeDefault}</Text>
+              <Text style={{color: '#444444'}}>{this.state.metodeDefault}</Text>
               <Icon
                 name="chevron-down"
                 size={25}
                 onPress={() => this.setState({dropdown: true})}
+                color="grey"
               />
             </View>
           </View>
@@ -235,8 +236,9 @@ class PetaDetail extends React.Component {
               marginTop: 15,
               fontSize: 16,
               fontWeight: 'bold',
+              color: '#444444',
             }}>
-            Sawah Jeblok
+            {this.props.route.params.namabidang}
           </Text>
           <View style={styles.cameraContainer}>
             <ImageBackground
@@ -246,26 +248,36 @@ class PetaDetail extends React.Component {
                   'https://static1.cbrimages.com/wordpress/wp-content/uploads/2019/10/5-Characters-Sanji-Can-Beat.jpg',
               }}>
               <TouchableNativeFeedback
-                onPress={() => this.props.navigation.navigate('PetaPreview')}>
+                onPress={() =>
+                  this.props.navigation.navigate('PetaPreview', {
+                    geometry: this.props.route.params.geometry,
+                    namabidang: this.props.route.params.namabidang,
+                  })
+                }>
                 <View style={styles.boxLiihat}>
                   <Text style={styles.textLihat}>Lihat Peta</Text>
                 </View>
               </TouchableNativeFeedback>
             </ImageBackground>
           </View>
-          <Text style={{marginHorizontal: 10, marginBottom: 5}}>
+          <Text
+            style={{marginHorizontal: 10, marginBottom: 5, color: '#444444'}}>
             Luas : 2500m2
           </Text>
-          <Text style={{marginHorizontal: 10, marginBottom: 5}}>
+          <Text
+            style={{marginHorizontal: 10, marginBottom: 5, color: '#444444'}}>
             Status Hak : 2500m2
           </Text>
-          <Text style={{marginHorizontal: 10, marginBottom: 5}}>
+          <Text
+            style={{marginHorizontal: 10, marginBottom: 5, color: '#444444'}}>
             Penggunaan Tanah : 2500m2
           </Text>
-          <Text style={{marginHorizontal: 10, marginBottom: 5}}>
+          <Text
+            style={{marginHorizontal: 10, marginBottom: 5, color: '#444444'}}>
             Pemanfaatan Tanah : 2500m2
           </Text>
-          <Text style={{marginHorizontal: 10, marginBottom: 10}}>
+          <Text
+            style={{marginHorizontal: 10, marginBottom: 10, color: '#444444'}}>
             RT/RW : 2500m2
           </Text>
           <View style={styles.boxContent}>
@@ -281,7 +293,7 @@ class PetaDetail extends React.Component {
                 }}
                 placeholder="Masukan Deskripsi"
                 textAlignVertical="top">
-                <Text>PROMOSI</Text>
+                <Text style={{color: '#444444'}}>PROMOSI</Text>
               </View>
             </TouchableNativeFeedback>
           </View>
@@ -358,5 +370,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffda77',
     margin: 10,
     borderRadius: 5,
+  },
+  textLihat: {
+    color: '#444444',
   },
 });

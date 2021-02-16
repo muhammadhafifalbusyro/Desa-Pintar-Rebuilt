@@ -11,9 +11,40 @@ import {
   ImageBackground,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
-import MapView from 'react-native-maps';
+import MapView, {Polygon, Polyline} from 'react-native-maps';
+
+const CORRR = [
+  {longitude: 122.86067468122086, latitude: 0.781962414844489},
+  {longitude: 122.86066905983787, latitude: 0.782097926975666},
+  {longitude: 122.86082618826985, latitude: 0.782093469438839},
+  {longitude: 122.86079387778285, latitude: 0.781954357297433},
+  {longitude: 122.86067468122086, latitude: 0.781962414844489},
+];
+
+const regionWil = {
+  latitude: 0.7818,
+  longitude: 122.8608,
+  latitudeDelta: 0.0009,
+  longitudeDelta: 0.0009,
+};
 
 class PetaPreview extends React.Component {
+  state = {
+    kordinat: [],
+  };
+  componentDidMount() {
+    this.cordinateFilter();
+  }
+  cordinateFilter = () => {
+    const data = this.props.route.params.geometry.coordinates[0];
+    console.log(data.length);
+    const newData = [];
+    for (let i = 0; i < data.length; i++) {
+      newData.push({longitude: data[i][0], latitude: data[i][1]});
+    }
+    console.log(newData);
+    this.setState({kordinat: newData});
+  };
   render() {
     return (
       <View style={styles.container}>
@@ -35,10 +66,11 @@ class PetaPreview extends React.Component {
               marginBottom: 15,
               fontSize: 16,
               fontWeight: 'bold',
+              color: '#444444',
             }}>
-            Sawah Jeblok
+            {this.props.route.params.namabidang}
           </Text>
-          <MapView
+          {/* <MapView
             style={{
               height: '100%',
               width: '100%',
@@ -49,7 +81,18 @@ class PetaPreview extends React.Component {
               latitudeDelta: 0.0922,
               longitudeDelta: 0.0421,
             }}
-          />
+          /> */}
+          <MapView
+            style={{height: '100%', width: '100%'}}
+            region={regionWil}
+            showsUserLocation={true}>
+            <Polygon
+              coordinates={this.state.kordinat}
+              strokeColor="red"
+              strokeWidth={2}
+              fillColor="rgba(252,3,3,0.5)"
+            />
+          </MapView>
         </View>
       </View>
     );
@@ -122,5 +165,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffda77',
     margin: 10,
     borderRadius: 5,
+  },
+  boxMap: {
+    backgroundColor: '#ffda77',
   },
 });

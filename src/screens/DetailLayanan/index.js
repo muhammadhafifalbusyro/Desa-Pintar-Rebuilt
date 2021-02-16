@@ -36,6 +36,7 @@ class DetailLayanan extends React.Component {
                 textAlign: 'center',
                 fontSize: 16,
                 fontWeight: 'bold',
+                color: '#444444',
               }}>
               Kependudukan
             </Text>

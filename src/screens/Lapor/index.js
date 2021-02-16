@@ -90,7 +90,7 @@ class Lapor extends React.Component {
                       #{value.kategori == null ? '' : value.kategori.nama}
                     </Text>
                     <View style={styles.statusBox}>
-                      <Text style={styles.text2}>Sudah ditanggapi</Text>
+                      <Text style={styles.text2}>Belum ditanggapiee</Text>
                     </View>
                   </View>
                   <View style={styles.boxTitle}>

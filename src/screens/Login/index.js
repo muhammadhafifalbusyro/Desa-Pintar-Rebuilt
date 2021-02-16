@@ -14,8 +14,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class Login extends React.Component {
   state = {
-    username: '098098098098',
-    password: '20210126',
+    username: '7501065706620001',
+    password: '19620617',
     loading: false,
   };
   login = () => {

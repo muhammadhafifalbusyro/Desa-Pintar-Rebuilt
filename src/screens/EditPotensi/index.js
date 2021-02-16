@@ -39,7 +39,7 @@ class EditPotensi extends React.Component {
         .then(resJson => {
           console.log(resJson.data);
           if (resJson.data) {
-            this.setState({data: resJson.data.reverse(), loading: false});
+            this.setState({data: resJson.data, loading: false});
             ToastAndroid.show(
               'Data berhasil didapatkan',
               ToastAndroid.SHORT,

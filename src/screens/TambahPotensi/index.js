@@ -18,7 +18,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import ImagePicker from 'react-native-image-picker';
 const options = {
-  title: 'Select Avatar',
+  title: 'Ambil Foto',
   storageOptions: {
     skipBackup: true,
     path: 'images',
@@ -45,41 +45,43 @@ class TambahPotensi extends React.Component {
     checkDefault: null,
     geometry: '',
     centroid: '',
-    koordinat:'',
-    data: [
-      {
-        id: 1,
-        kategori: 'pertanian',
-        title: 'Hama Wereng',
-        deskripsi: 'Hama wereng adalah hama',
-        image:
-          'https://static1.cbrimages.com/wordpress/wp-content/uploads/2019/10/5-Characters-Sanji-Can-Beat.jpg',
-        status: 'belum ditanggapi',
-        geometry: '1212',
-        centroid: '12345',
-        koordinat: '12345',
-      },
-      {
-        id: 2,
-        kategori: 'pertanian',
-        title: 'Ikan Mati',
-        deskripsi: 'Ikan abis tuh mati',
-        image:
-          'https://static1.cbrimages.com/wordpress/wp-content/uploads/2019/10/5-Characters-Sanji-Can-Beat.jpg',
-        status: 'belum ditanggapi',
-        geometry: '1212',
-        centroid: '12345',
-        koordinat: '12345',
-      },
-    ],
+    koordinat: '',
+    // data: [
+    //   {
+    //     id: 1,
+    //     kategori: 'pertanian',
+    //     title: 'Hama Wereng',
+    //     deskripsi: 'Hama wereng adalah hama',
+    //     image:
+    //       'https://static1.cbrimages.com/wordpress/wp-content/uploads/2019/10/5-Characters-Sanji-Can-Beat.jpg',
+    //     status: 'belum ditanggapi',
+    //     geometry: '1212',
+    //     centroid: '12345',
+    //     koordinat: '12345',
+    //   },
+    //   {
+    //     id: 2,
+    //     kategori: 'pertanian',
+    //     title: 'Ikan Mati',
+    //     deskripsi: 'Ikan abis tuh mati',
+    //     image:
+    //       'https://static1.cbrimages.com/wordpress/wp-content/uploads/2019/10/5-Characters-Sanji-Can-Beat.jpg',
+    //     status: 'belum ditanggapi',
+    //     geometry: '1212',
+    //     centroid: '12345',
+    //     koordinat: '12345',
+    //   },
+    // ],
+    data: [],
+    marker: false,
   };
   componentDidMount() {
-    this.getDataKategori();
+    this.getDataPotensi();
   }
-  getDataKategori = () => {
+  getDataPotensi = () => {
     AsyncStorage.getItem('access').then(value => {
       const token = value;
-      const url = 'http://156.67.219.143/v1/kategorilapor/';
+      const url = 'https://api.istudios.id/v1/sigbidang/me/';
       fetch(url, {
         method: 'GET',
         headers: {
@@ -88,8 +90,24 @@ class TambahPotensi extends React.Component {
       })
         .then(res => res.json())
         .then(resJson => {
-          if (resJson.data) {
-            this.setState({dataKategori: resJson.data});
+          // if (resJson.data) {
+          //   this.setState({dataKategori: resJson.data});
+          //   ToastAndroid.show(
+          //     'Data berhasil didapatkan',
+          //     ToastAndroid.SHORT,
+          //     ToastAndroid.CENTER,
+          //   );
+          // } else {
+          //   console.log('error');
+          //   ToastAndroid.show(
+          //     'Data gagal didapatkan',
+          //     ToastAndroid.SHORT,
+          //     ToastAndroid.CENTER,
+          //   );
+          // }
+          if (resJson.kepemilikan) {
+            console.log(resJson.kepemilikan);
+            this.setState({data: resJson.kepemilikan});
             ToastAndroid.show(
               'Data berhasil didapatkan',
               ToastAndroid.SHORT,
@@ -178,6 +196,7 @@ class TambahPotensi extends React.Component {
         geometry,
         centroid,
         koordinat,
+        marker,
       } = this.state;
       const url = 'https://api.istudios.id/v1/potensi/';
       if (
@@ -185,8 +204,11 @@ class TambahPotensi extends React.Component {
         kontak != '' &&
         judul != '' &&
         deskripsi != '' &&
-        geometry != ''
+        koordinat != '' &&
+        geometry != '' &&
+        marker != false
       ) {
+        console.log('ini data kordinat ' + JSON.stringify(koordinat));
         this.setState({modalVisible: true});
         let image = {
           uri: this.state.uri,
@@ -201,9 +223,9 @@ class TambahPotensi extends React.Component {
         formData.append('judul', judul);
         formData.append('isi', deskripsi);
         formData.append('gambar', image);
-        formData.append('geometry', geometry);
-        formData.append('centroid', centroid);
-        formData.append('koordinat', koordinat);
+        formData.append('geometry', JSON.stringify(geometry));
+        formData.append('centroid', '111');
+        formData.append('koordinat', JSON.stringify(koordinat));
 
         console.log(formData);
         if (this.state.fileSize >= 1500000) {
@@ -225,7 +247,7 @@ class TambahPotensi extends React.Component {
           })
             .then(response => response.json())
             .then(json => {
-              // console.log(json);
+              console.log(json);
               // this.setState({modalVisible: false});
               if (json.data) {
                 this.setState({modalVisible: false});
@@ -396,52 +418,91 @@ class TambahPotensi extends React.Component {
           <View style={styles.boxContent}>
             <Text style={styles.text1}>Lokasi Potensi</Text>
             {this.state.data.map((value, key) => {
-              if (this.state.checkDefault == value.id) {
+              if (
+                this.state.checkDefault == value.bidang &&
+                this.state.marker == true
+              ) {
                 return (
                   <View key={key} style={styles.boxContainer2}>
-                    <TouchableOpacity
+                    <TouchableNativeFeedback
                       activeOpacity={0.7}
                       onPress={() => {
                         this.setState({
-                          checkDefault: value.id,
+                          checkDefault: value.bidang,
+                          koordinat: value.geometry.coordinates,
                           geometry: value.geometry,
-                          centroid: value.centroid,
-                          koordinat:value.koordinat
+                          marker: !this.state.marker,
                         });
                       }}>
                       <View style={styles.boxContent2}>
                         <Image
-                          source={{uri: value.image}}
+                          source={{
+                            uri:
+                              'https://martialartsplusinc.com/wp-content/uploads/2017/04/default-image.jpg',
+                          }}
                           style={styles.images2}
                         />
-                        <Text style={styles.text12}>{value.title}</Text>
+                        <Text style={styles.text12}>{value.namabidang}</Text>
                         <Icon name="check" size={40} color="#19D2BA" />
                       </View>
-                    </TouchableOpacity>
+                    </TouchableNativeFeedback>
+                  </View>
+                );
+              } else if (
+                this.state.checkDefault == value.bidang &&
+                this.state.marker == false
+              ) {
+                return (
+                  <View key={key} style={styles.boxContainer2}>
+                    <TouchableNativeFeedback
+                      activeOpacity={0.7}
+                      onPress={() => {
+                        this.setState({
+                          checkDefault: value.bidang,
+                          koordinat: value.geometry.coordinates,
+                          geometry: value.geometry,
+                          marker: !this.state.marker,
+                        });
+                      }}>
+                      <View style={styles.boxContent2}>
+                        <Image
+                          source={{
+                            uri:
+                              'https://martialartsplusinc.com/wp-content/uploads/2017/04/default-image.jpg',
+                          }}
+                          style={styles.images2}
+                        />
+                        <Text style={styles.text12}>{value.namabidang}</Text>
+                        <Icon name="check" size={40} color="white" />
+                      </View>
+                    </TouchableNativeFeedback>
                   </View>
                 );
               } else {
                 return (
                   <View key={key} style={styles.boxContainer2}>
-                    <TouchableOpacity
+                    <TouchableNativeFeedback
                       activeOpacity={0.7}
                       onPress={() => {
                         this.setState({
-                          checkDefault: value.id,
+                          checkDefault: value.bidang,
+                          koordinat: value.geometry.coordinates,
                           geometry: value.geometry,
-                          centroid: value.centroid,
-                          koordinat:value.koordinat
+                          marker: !this.state.marker,
                         });
                       }}>
                       <View style={styles.boxContent2}>
                         <Image
-                          source={{uri: value.image}}
+                          source={{
+                            uri:
+                              'https://martialartsplusinc.com/wp-content/uploads/2017/04/default-image.jpg',
+                          }}
                           style={styles.images2}
                         />
-                        <Text style={styles.text12}>{value.title}</Text>
+                        <Text style={styles.text12}>{value.namabidang}</Text>
                         <Icon name="check" size={40} color="white" />
                       </View>
-                    </TouchableOpacity>
+                    </TouchableNativeFeedback>
                   </View>
                 );
               }
@@ -459,7 +520,7 @@ class TambahPotensi extends React.Component {
                 }}
                 placeholder="Masukan Deskripsi"
                 textAlignVertical="top">
-                <Text style={{color: 'white'}}>LAPORKAN</Text>
+                <Text style={{color: 'white'}}>PUBLISH</Text>
               </View>
             </TouchableNativeFeedback>
           </View>
@@ -513,7 +574,7 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
   },
   text1: {
-    color: '#444444',
+    color: 'grey',
     fontWeight: 'bold',
     marginBottom: 5,
   },
@@ -552,5 +613,6 @@ const styles = StyleSheet.create({
   text12: {
     marginLeft: 5,
     width: '60%',
+    color: '#444444',
   },
 });

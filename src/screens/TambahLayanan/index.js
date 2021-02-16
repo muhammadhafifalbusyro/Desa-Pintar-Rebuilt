@@ -89,6 +89,7 @@ class TambahLayanan extends React.Component {
           name="plus"
           size={20}
           onPress={() => this.setState({icon: !this.state.icon})}
+          color="#444444"
         />
       );
     } else {
@@ -97,6 +98,7 @@ class TambahLayanan extends React.Component {
           name="minus"
           size={20}
           onPress={() => this.setState({icon: !this.state.icon})}
+          color="#444444"
         />
       );
     }
@@ -108,10 +110,10 @@ class TambahLayanan extends React.Component {
     } else {
       return (
         <View style={styles.persyaratanContentBox2}>
-          <Text style={{marginBottom: 10}}>
+          <Text style={{marginBottom: 10, color: '#444444'}}>
             Persyaratan yang harus dibawa :{'\n'}1.KTP{'\n'}2.Formulir isian
           </Text>
-          <Text>
+          <Text style={{color: '#444444'}}>
             Alur layanan :{'\n'}1.Pengisian form{'\n'}2.Ambil surat di kantor
             desa
           </Text>
@@ -208,6 +210,7 @@ class TambahLayanan extends React.Component {
                 textAlign: 'center',
                 fontSize: 16,
                 fontWeight: 'bold',
+                color: 'grey',
               }}>
               Surat Keterangan Domisili
             </Text>
@@ -221,7 +224,7 @@ class TambahLayanan extends React.Component {
               {this.accordion()}
             </View>
           </View>
-          <Text style={{padding: 10}}>
+          <Text style={{padding: 10, color: '#444444'}}>
             Silahkan lengkapi isian di bawah ini
           </Text>
           <View style={styles.boxInput}>
@@ -483,5 +486,6 @@ const styles = StyleSheet.create({
   },
   textPersyaratan: {
     fontWeight: 'bold',
+    color: '#444444',
   },
 });

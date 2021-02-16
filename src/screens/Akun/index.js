@@ -107,7 +107,7 @@ class Akun extends React.Component {
                 style={styles.buttonEditProfile}
                 activeOpacity={0.8}
                 delayPressIn={1}>
-                <Text style={styles.textButtonEditProfile}>Edit Profile</Text>
+                <Text style={styles.textButtonEditProfile}>Edit Profil</Text>
               </TouchableOpacity>
             </View>
           </View>

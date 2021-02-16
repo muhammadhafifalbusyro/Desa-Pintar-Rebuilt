@@ -7,33 +7,92 @@ import {
   Image,
   TouchableOpacity,
   TouchableNativeFeedback,
+  ToastAndroid,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import MapView from 'react-native-maps';
 import Icon from 'react-native-vector-icons/Feather';
 
 class Peta extends React.Component {
   state = {
-    data: [
-      {
-        id: 1,
-        kategori: 'pertanian',
-        title: 'Hama Wereng',
-        deskripsi: 'Hama wereng adalah hama',
-        image:
-          'https://static1.cbrimages.com/wordpress/wp-content/uploads/2019/10/5-Characters-Sanji-Can-Beat.jpg',
-        status: 'belum ditanggapi',
-      },
-      {
-        id: 2,
-        kategori: 'pertanian',
-        title: 'Ikan Mati',
-        deskripsi: 'Ikan abis tuh mati',
-        image:
-          'https://static1.cbrimages.com/wordpress/wp-content/uploads/2019/10/5-Characters-Sanji-Can-Beat.jpg',
-        status: 'belum ditanggapi',
-      },
-    ],
+    // data: [
+    //   {
+    //     id: 1,
+    //     kategori: 'pertanian',
+    //     title: 'Hama Wereng',
+    //     deskripsi: 'Hama wereng adalah hama',
+    //     image:
+    //       'https://static1.cbrimages.com/wordpress/wp-content/uploads/2019/10/5-Characters-Sanji-Can-Beat.jpg',
+    //     status: 'belum ditanggapi',
+    //   },
+    //   {
+    //     id: 2,
+    //     kategori: 'pertanian',
+    //     title: 'Ikan Mati',
+    //     deskripsi: 'Ikan abis tuh mati',
+    //     image:
+    //       'https://static1.cbrimages.com/wordpress/wp-content/uploads/2019/10/5-Characters-Sanji-Can-Beat.jpg',
+    //     status: 'belum ditanggapi',
+    //   },
+    // ],
+    data: [],
+  };
+  componentDidMount() {
+    this.getBidang();
+  }
+  getBidang = () => {
+    AsyncStorage.getItem('access').then(value => {
+      const token = value;
+      const url = 'https://api.istudios.id/v1/sigbidang/me/';
+      fetch(url, {
+        method: 'GET',
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      })
+        .then(res => res.json())
+        .then(resJson => {
+          // if (resJson.data) {
+          //   this.setState({dataKategori: resJson.data});
+          //   ToastAndroid.show(
+          //     'Data berhasil didapatkan',
+          //     ToastAndroid.SHORT,
+          //     ToastAndroid.CENTER,
+          //   );
+          // } else {
+          //   console.log('error');
+          //   ToastAndroid.show(
+          //     'Data gagal didapatkan',
+          //     ToastAndroid.SHORT,
+          //     ToastAndroid.CENTER,
+          //   );
+          // }
+          if (resJson.kepemilikan) {
+            console.log(resJson.kepemilikan);
+            this.setState({data: resJson.kepemilikan});
+            ToastAndroid.show(
+              'Data berhasil didapatkan',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+          } else {
+            console.log('error');
+            ToastAndroid.show(
+              'Data gagal didapatkan',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+          }
+        })
+        .catch(er => {
+          ToastAndroid.show(
+            'Data gagal didapatkan',
+            ToastAndroid.SHORT,
+            ToastAndroid.CENTER,
+          );
+        });
+    });
   };
   render() {
     return (
@@ -49,10 +108,10 @@ class Peta extends React.Component {
                 width: '100%',
               }}
               initialRegion={{
-                latitude: 37.78825,
-                longitude: -122.4324,
-                latitudeDelta: 0.0922,
-                longitudeDelta: 0.0421,
+                latitude: 0.7818,
+                longitude: 122.8608,
+                latitudeDelta: 0.009,
+                longitudeDelta: 0.009,
               }}
             />
           </View>
@@ -62,15 +121,27 @@ class Peta extends React.Component {
           {this.state.data.map((value, key) => {
             return (
               <View key={key} style={styles.boxContainer}>
-                <TouchableOpacity
-                  activeOpacity={0.7}
-                  onPress={() => this.props.navigation.navigate('PetaDetail')}>
+                <TouchableNativeFeedback
+                  onPress={() =>
+                    this.props.navigation.navigate('PetaDetail', {
+                      bidang: value.bidang,
+                      nbt: value.nbt,
+                      geometry: value.geometry,
+                      namabidang: value.namabidang,
+                    })
+                  }>
                   <View style={styles.boxContent}>
-                    <Image source={{uri: value.image}} style={styles.images} />
-                    <Text style={styles.text1}>{value.title}</Text>
-                    <Icon name="chevron-right" size={40} />
+                    <Image
+                      source={{
+                        uri:
+                          'https://martialartsplusinc.com/wp-content/uploads/2017/04/default-image.jpg',
+                      }}
+                      style={styles.images}
+                    />
+                    <Text style={styles.text1}>{value.namabidang}</Text>
+                    <Icon name="chevron-right" size={40} color="grey" />
                   </View>
-                </TouchableOpacity>
+                </TouchableNativeFeedback>
               </View>
             );
           })}

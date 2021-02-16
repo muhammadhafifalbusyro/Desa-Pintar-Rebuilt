@@ -12,6 +12,89 @@ import {
 import Icon from 'react-native-vector-icons/Feather';
 
 class Layanan extends React.Component {
+  state = {
+    layananList: [
+      {
+        id: 1,
+        nama: 'Kependudukan',
+        bg: '#FFDA77',
+        nav: 'DetailLayanan',
+      },
+      {
+        id: 2,
+        nama: 'Perizinan',
+        bg: '#FFA45B',
+        nav: null,
+      },
+      {
+        id: 13,
+        nama: 'Pendidikan',
+        bg: '#AEE6E6',
+        nav: null,
+      },
+    ],
+    search: '',
+  };
+
+  renderListApp = () => {
+    if (this.state.search == '') {
+      return this.state.layananList.map((value, key) => {
+        if (value.nav != null) {
+          return (
+            <View style={styles.boxContainer} key={key}>
+              <TouchableNativeFeedback
+                onPress={() => this.props.navigation.navigate(value.nav)}>
+                <View style={{...styles.boxContent, backgroundColor: value.bg}}>
+                  <Text style={styles.text1}>{value.nama}</Text>
+                  <Icon name="chevron-right" size={40} color="grey" />
+                </View>
+              </TouchableNativeFeedback>
+            </View>
+          );
+        } else {
+          return (
+            <View style={styles.boxContainer} key={key}>
+              <View style={{...styles.boxContent, backgroundColor: value.bg}}>
+                <Text style={styles.text1}>{value.nama}</Text>
+                <Icon name="chevron-right" size={40} color="grey" />
+              </View>
+            </View>
+          );
+        }
+      });
+    } else {
+      let newData = this.state.layananList.filter(elemen => {
+        let nameLowerCase = elemen.nama.toLowerCase();
+        let searchLowerCase = this.state.search.toLowerCase();
+        return nameLowerCase.includes(searchLowerCase);
+      });
+      console.log(newData);
+      return newData.map((value, key) => {
+        if (value.nav != null) {
+          return (
+            <View style={styles.boxContainer} key={key}>
+              <TouchableNativeFeedback
+                onPress={() => this.props.navigation.navigate(value.nav)}>
+                <View style={{...styles.boxContent, backgroundColor: value.bg}}>
+                  <Text style={styles.text1}>{value.nama}</Text>
+                  <Icon name="chevron-right" size={40} color="grey" />
+                </View>
+              </TouchableNativeFeedback>
+            </View>
+          );
+        } else {
+          return (
+            <View style={styles.boxContainer} key={key}>
+              <View style={{...styles.boxContent, backgroundColor: value.bg}}>
+                <Text style={styles.text1}>{value.nama}</Text>
+                <Icon name="chevron-right" size={40} color="grey" />
+              </View>
+            </View>
+          );
+        }
+      });
+    }
+  };
   render() {
     return (
       <View style={styles.container}>
@@ -24,31 +107,44 @@ class Layanan extends React.Component {
           </Text>
           <View style={styles.contentContainer}>
             <View style={styles.boxContentSearch}>
-              <TextInput placeholder="Cari Layanan" style={{width: '85%'}} />
+              <TextInput
+                placeholder="Cari Layanan"
+                style={{width: '85%'}}
+                onChangeText={teks => {
+                  this.setState({search: teks});
+                }}
+                placeholderTextColor="#444444"
+              />
               <Icon name="search" size={20} color="grey" />
             </View>
           </View>
-          <View style={styles.boxContainer}>
-            <TouchableNativeFeedback
-              onPress={() => this.props.navigation.navigate('DetailLayanan')}>
-              <View style={{...styles.boxContent, backgroundColor: '#ffda77'}}>
-                <Text style={styles.text1}>Kependudukan</Text>
-                <Icon name="search" size={20} color="grey" />
-              </View>
-            </TouchableNativeFeedback>
-          </View>
-          <View style={styles.boxContainer}>
-            <View style={styles.boxContent}>
-              <Text style={styles.text1}>Perizinan</Text>
-              <Icon name="search" size={20} color="grey" />
-            </View>
-          </View>
-          <View style={styles.boxContainer}>
-            <View style={{...styles.boxContent, backgroundColor: '#aee6e6'}}>
-              <Text style={styles.text1}>Pendidikan</Text>
-              <Icon name="search" size={20} color="grey" />
-            </View>
-          </View>
+          {/* {this.state.layananList.map((value, key) => {
+            if (value.nav != null) {
+              return (
+                <View style={styles.boxContainer} key={key}>
+                  <TouchableNativeFeedback
+                    onPress={() => this.props.navigation.navigate(value.nav)}>
+                    <View
+                      style={{...styles.boxContent, backgroundColor: value.bg}}>
+                      <Text style={styles.text1}>{value.nama}</Text>
+                      <Icon name="chevron-right" size={40} color="grey" />
+                    </View>
+                  </TouchableNativeFeedback>
+                </View>
+              );
+            } else {
+              return (
+                <View style={styles.boxContainer} key={key}>
+                  <View
+                    style={{...styles.boxContent, backgroundColor: value.bg}}>
+                    <Text style={styles.text1}>{value.nama}</Text>
+                    <Icon name="chevron-right" size={40} color="grey" />
+                  </View>
+                </View>
+              );
+            }
+          })} */}
+          {this.renderListApp()}
         </ScrollView>
       </View>
     );
@@ -81,6 +177,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
     padding: 10,
     fontWeight: 'bold',
+    color: '#444444',
   },
   contentContainer: {
     padding: 10,

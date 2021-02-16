@@ -135,8 +135,7 @@ class Beranda extends React.Component {
         .then(resJson => {
           console.log(resJson);
           if (resJson.data) {
-            const dataReverse = resJson.data.reverse();
-            this.setState({dataPotensi: dataReverse, loading: false});
+            this.setState({dataPotensi: resJson.data, loading: false});
           } else if (resJson.code) {
             this.setState({loading: false});
             ToastAndroid.show(
@@ -401,6 +400,7 @@ const styles = StyleSheet.create({
   text1: {
     marginLeft: 5,
     width: '60%',
+    color: '#444444',
   },
   contentContainer: {
     padding: 10,

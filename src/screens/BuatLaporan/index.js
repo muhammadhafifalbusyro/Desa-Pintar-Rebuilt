@@ -18,7 +18,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import ImagePicker from 'react-native-image-picker';
 const options = {
-  title: 'Select Avatar',
+  title: 'Ambil Foto',
   storageOptions: {
     skipBackup: true,
     path: 'images',
@@ -48,7 +48,7 @@ class BuatLaporan extends React.Component {
   getDataKategori = () => {
     AsyncStorage.getItem('access').then(value => {
       const token = value;
-      const url = 'http://156.67.219.143/v1/kategorilapor/';
+      const url = 'https://api.istudios.id/v1/kategorilapor/';
       fetch(url, {
         method: 'GET',
         headers: {
@@ -243,7 +243,9 @@ class BuatLaporan extends React.Component {
                   borderBottomWidth: 1,
                   borderColor: 'rgba(0,0,0,0.3)',
                 }}>
-                <Text style={{fontWeight: 'bold'}}>Pilih Kategori</Text>
+                <Text style={{fontWeight: 'bold', color: '#444444'}}>
+                  Pilih Kategori
+                </Text>
               </View>
               <ScrollView style={{flex: 1, padding: 10}}>
                 {this.state.dataKategori.map((value, key) => {
@@ -317,11 +319,12 @@ class BuatLaporan extends React.Component {
           <View style={styles.boxContent}>
             <Text style={styles.text1}>Pilih Kategori</Text>
             <View style={styles.childBox}>
-              <Text>{this.state.kategori}</Text>
+              <Text style={{color: '#444444'}}>{this.state.kategori}</Text>
               <Icon
                 name="chevron-down"
                 size={25}
                 onPress={() => this.setState({visible: true})}
+                color="grey"
               />
             </View>
           </View>
@@ -413,7 +416,7 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
   },
   text1: {
-    color: '#444444',
+    color: 'grey',
     fontWeight: 'bold',
     marginBottom: 5,
   },
